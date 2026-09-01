@@ -1,58 +1,31 @@
-# 희윤이 한국사 24주 준비보드
+# 희윤이 한국사 24주 준비보드 V2.1
 
-초4에서 초5로 올라가기 전, 한국사 수업을 위한 24주 준비용 모바일 웹앱입니다.
+이번 버전부터 프로젝트를 모듈형으로 나눴습니다.
 
-## 포함 기능
-- 24주 한국사 커리큘럼
-- 주차별 완료 체크
-- 이야기 / 한자어 / 5분대화 세부 체크
-- 전체 진행률 표시
-- 월별 필터
-- 체크 상태 자동 저장(localStorage)
-- 홈 화면 추가용 PWA 설정
-- 기본 오프라인 캐시
+## 파일 역할
+- index.html : 화면의 큰 뼈대
+- styles.css : 디자인
+- data.js : 24주 학습 내용
+- app.js : DAY 완료, 퀴즈, 진도 저장 기능
+- sw.js : 오프라인 캐시
+- manifest.json : 홈 화면 앱 설정
+- icons/ : 앱 아이콘
 
-## 가장 쉬운 배포 방법
+## 앞으로 부분 수정하는 법
+- 학습 내용만 바꾸기 → data.js
+- 체크/진도/퀴즈 기능 바꾸기 → app.js
+- 색상/간격/카드 디자인 바꾸기 → styles.css
+- 상단 제목/안내 문구 바꾸기 → index.html
 
-### 1. GitHub 저장소 만들기
-1. GitHub에서 `New repository` 선택
-2. 저장소 이름 예: `heeyoon-history`
-3. `Public` 또는 `Private` 선택
-4. 저장소 생성
-5. 이 ZIP을 압축 해제한 뒤 파일 전체를 업로드
-   - index.html
-   - manifest.json
-   - sw.js
-   - icons 폴더
-   - README.md
+즉 다음부터는 전체 사이트를 다시 생성할 필요가 없습니다.
 
-### 2. Vercel 배포
-1. Vercel 로그인
-2. `Add New` → `Project`
-3. GitHub의 `heeyoon-history` 저장소 선택
-4. Framework Preset은 `Other`
-5. Build Command는 비워둠
-6. Output Directory도 비워둠
-7. Deploy 클릭
+## 주 3회 구조
+- DAY 1: 이야기 + 핵심 한자어
+- DAY 2: 용선생 처음 한국사 또는 EBS 영상
+- DAY 3: 부모 대화 + 오늘의 한 줄 + 퀴즈
 
-배포가 끝나면 `https://프로젝트이름.vercel.app` 형태의 주소가 생깁니다.
+DAY 2는 책과 영상을 둘 다 하지 않아도 됩니다. 하나를 고르면 DAY 2 완료입니다.
 
-## 휴대폰 홈 화면에 추가
-
-### Android / Chrome
-메뉴(⋮) → `홈 화면에 추가` 또는 `앱 설치`
-
-### iPhone / Safari
-공유 버튼 → `홈 화면에 추가`
-
-## 저장 방식
-현재 버전은 체크 상태를 **각 기기의 브라우저 내부(localStorage)** 에 저장합니다.
-
-따라서 같은 주소라도
-- 아빠 휴대폰
-- 아이 태블릿
-- PC
-
-의 체크 상태는 서로 다릅니다.
-
-여러 기기에서 동일한 체크 상태를 공유하려면 다음 단계에서 Supabase를 연결하면 됩니다.
+## 실제 학습 진도
+V2.1부터 localStorage 키 `heeyoon-history-progress`를 실제 학습 기록용으로 사용합니다.
+향후 업데이트에서는 이 키와 기존 데이터 필드를 유지해야 합니다.
