@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#17345f" />
+  <meta name="description" content="초4에서 초5로 올라가기 전, 한국사를 재미있게 준비하는 24주 학습 보드" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <title>희윤이 한국사 24주 준비보드</title>
+  <style>
+    :root{
+      --bg:#f4f7fb; --card:#ffffff; --text:#172033; --muted:#687386;
+      --navy:#17345f; --blue:#2e67b1; --line:#dce4ef; --soft:#eaf1fb;
+      --green:#2f7d5b; --gold:#9b6b1c; --danger:#a33b3b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Roboto,sans-serif;
+      background:var(--bg); color:var(--text);
+    }
+    button,input{font:inherit}
+    .app{max-width:980px;margin:0 auto;padding:20px 14px 48px}
+    .hero{
+      background:linear-gradient(145deg,#17345f,#2d5c95);
+      color:white;border-radius:24px;padding:22px;position:relative;overflow:hidden;
+    }
+    .hero:after{
+      content:""; position:absolute; width:180px; height:180px; border-radius:50%;
+      background:rgba(255,255,255,.07); right:-55px; top:-70px;
+    }
+    .eyebrow{font-size:13px;opacity:.84;margin-bottom:6px}
+    h1{margin:0;font-size:28px;line-height:1.25}
+    .sub{margin:9px 0 0;font-size:14px;line-height:1.65;opacity:.9}
+    .progress-wrap{
+      margin-top:20px;background:rgba(255,255,255,.12);padding:13px;border-radius:16px
+    }
+    .progress-row{display:flex;justify-content:space-between;gap:12px;font-size:14px}
+    .bar{height:10px;background:rgba(255,255,255,.22);border-radius:999px;margin-top:9px;overflow:hidden}
+    .bar > div{height:100%;width:0;background:#fff;border-radius:999px;transition:width .25s ease}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+    .stat{background:rgba(255,255,255,.11);padding:10px;border-radius:13px;text-align:center}
+    .stat strong{display:block;font-size:19px}.stat span{font-size:11px;opacity:.82}
+
+    .section-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:24px 2px 10px}
+    .section-title h2{font-size:18px;margin:0}
+    .section-title p{font-size:12px;color:var(--muted);margin:3px 0 0}
+    .routine{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .routine-card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:14px}
+    .routine-card b{font-size:14px}.routine-card p{font-size:12px;color:var(--muted);line-height:1.55;margin:6px 0 0}
+
+    .filters{display:flex;gap:8px;overflow:auto;padding:2px 1px 6px;scrollbar-width:none}
+    .filters::-webkit-scrollbar{display:none}
+    .filter{
+      border:1px solid var(--line);background:white;color:var(--text);
+      border-radius:999px;padding:9px 13px;white-space:nowrap;cursor:pointer
+    }
+    .filter.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+    .weeks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+    .week{
+      background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;
+      transition:.18s ease;
+    }
+    .week.done{border-color:#b9d8c8;background:#fbfefc}
+    .top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .week-no{font-size:11px;color:var(--muted);margin-bottom:4px}
+    .week h3{font-size:16px;margin:0}
+    .check{
+      appearance:none;width:25px;height:25px;border:2px solid #b7c2d1;border-radius:8px;
+      display:grid;place-items:center;cursor:pointer;flex:none;background:#fff
+    }
+    .check:checked{background:var(--green);border-color:var(--green)}
+    .check:checked:after{content:"✓";color:white;font-weight:800;font-size:16px}
+    .words{font-size:13px;margin-top:12px;line-height:1.6}
+    .words b{color:var(--navy)}
+    .question{
+      margin-top:9px;padding:10px 11px;background:var(--soft);border-radius:12px;
+      color:#315177;font-size:12px;line-height:1.55
+    }
+    .mini{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+    .mini label{
+      display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);
+      background:#f8fafc;border:1px solid var(--line);padding:6px 8px;border-radius:999px
+    }
+
+    .rules{
+      background:white;border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:12px
+    }
+    .rules-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}
+    .rule{font-size:13px;color:#425067}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .btn{
+      border:1px solid var(--line);background:white;border-radius:11px;padding:10px 12px;cursor:pointer
+    }
+    .btn.primary{background:var(--navy);border-color:var(--navy);color:white}
+    .btn.danger{color:var(--danger)}
+    .install-note{
+      margin-top:16px;background:#fff9eb;border:1px solid #f1dfb3;color:#6e5725;
+      border-radius:15px;padding:13px;font-size:12px;line-height:1.6
+    }
+    .hidden{display:none!important}
+    footer{text-align:center;color:var(--muted);font-size:11px;margin-top:26px}
+
+    @media(max-width:680px){
+      .app{padding:12px 10px 36px}
+      .hero{border-radius:20px;padding:18px}
+      h1{font-size:23px}
+      .routine{grid-template-columns:1fr}
+      .weeks{grid-template-columns:1fr}
+      .rules-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div class="eyebrow">초4 → 초5 · 한국사 선행이 아닌 '이해 준비'</div>
+      <h1>희윤이 한국사 24주 준비보드</h1>
+      <p class="sub">주 3회, 한 번에 15~20분. 연도 암기보다 <b>역사 흐름 · 한자어 · 원인과 결과</b>를 익혀요.</p>
+      <div class="progress-wrap">
+        <div class="progress-row"><span>전체 진행률</span><strong id="progressText">0% · 0/24주</strong></div>
+        <div class="bar"><div id="progressBar"></div></div>
+        <div class="stats">
+          <div class="stat"><strong id="doneCount">0</strong><span>완료한 주</span></div>
+          <div class="stat"><strong id="todoCount">24</strong><span>남은 주</span></div>
+          <div class="stat"><strong id="studyCount">0</strong><span>활동 체크</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-title">
+      <div><h2>매주 이렇게 해요</h2><p>모든 활동을 다 못 해도 괜찮아요.</p></div>
+    </div>
+    <section class="routine">
+      <div class="routine-card"><b>① 이야기 만나기</b><p>역사책이나 영상으로 이번 주 시대를 10~15분 가볍게 접하기</p></div>
+      <div class="routine-card"><b>② 한자어 3개</b><p>뜻을 풀어보고 실제 역사 속에서 어떤 뜻으로 쓰였는지 이야기하기</p></div>
+      <div class="routine-card"><b>③ 5분 대화</b><p>“왜 그랬을까?” “그 뒤에 무엇이 달라졌을까?”를 부모와 이야기하기</p></div>
+    </section>
+
+    <div class="section-title">
+      <div><h2>24주 보드</h2><p>완료하면 체크하세요. 상태는 이 휴대폰에 자동 저장됩니다.</p></div>
+    </div>
+    <nav class="filters" aria-label="월별 보기">
+      <button class="filter active" data-filter="all">전체</button>
+      <button class="filter" data-filter="1">1개월</button>
+      <button class="filter" data-filter="2">2개월</button>
+      <button class="filter" data-filter="3">3개월</button>
+      <button class="filter" data-filter="4">4개월</button>
+      <button class="filter" data-filter="5">5개월</button>
+      <button class="filter" data-filter="6">6개월</button>
+    </nav>
+
+    <section id="weeks" class="weeks" aria-live="polite"></section>
+
+    <div class="section-title">
+      <div><h2>부모용 운영 원칙</h2><p>시험처럼 확인하기보다 아이가 자기 말로 설명하게 해주세요.</p></div>
+    </div>
+    <section class="rules">
+      <div class="rules-grid">
+        <div class="rule">✓ 연도·왕 이름 줄줄 외우지 않기</div>
+        <div class="rule">✓ 지도에서 위치 한 번 찾아보기</div>
+        <div class="rule">✓ 한자어 뜻을 먼저 이해하기</div>
+        <div class="rule">✓ 못 한 주를 다음 주에 몰아서 하지 않기</div>
+      </div>
+      <div class="actions">
+        <button id="showAllBtn" class="btn primary" type="button">전체 주차 보기</button>
+        <button id="resetBtn" class="btn danger" type="button">모든 체크 초기화</button>
+      </div>
+      <div class="install-note">
+        <b>📱 앱처럼 쓰는 법</b><br>
+        iPhone Safari: 공유 버튼 → <b>홈 화면에 추가</b><br>
+        Android Chrome: 메뉴(⋮) → <b>홈 화면에 추가</b> 또는 <b>앱 설치</b>
+      </div>
+    </section>
+
+    <footer>희윤이 학습도우미 · 한국사 24주 준비보드</footer>
+  </main>
+
+  <script>
+    const curriculum = [
+      [1,"역사와 시간","시대 · 과거 · 현재","옛날과 지금은 무엇이 달라졌을까?"],
+      [1,"나라와 왕조","국가 · 왕조 · 건국","나라가 새로 생긴다는 건 무슨 뜻일까?"],
+      [1,"지도 읽기","수도 · 영토 · 국경","수도는 왜 중요한 곳일까?"],
+      [1,"사건의 원인과 결과","원인 · 결과 · 변화","어떤 일이 생기면 그 뒤에는 무엇이 달라질까?"],
+      [2,"구석기 시대","사냥 · 채집 · 이동","왜 한곳에 오래 살기 어려웠을까?"],
+      [2,"신석기 시대","농경 · 정착 · 움집","농사를 지으면 생활이 어떻게 달라질까?"],
+      [2,"청동기와 고조선","계급 · 지배 · 건국","왜 힘센 사람이 생기기 시작했을까?"],
+      [2,"고구려·백제·신라","삼국 · 영토 · 경쟁","세 나라는 왜 서로 경쟁했을까?"],
+      [3,"삼국의 성장","정복 · 교류 · 문화","영토가 넓어지면 좋은 점과 어려운 점은?"],
+      [3,"삼국 통일 과정","동맹 · 전쟁 · 통일","신라는 어떻게 삼국을 통일했을까?"],
+      [3,"통일신라와 발해","통일 · 발해 · 계승","같은 시대에 두 나라가 존재했다는 건?"],
+      [3,"고려의 건국","후삼국 · 왕건 · 고려","새 왕조는 왜 사람들의 지지가 필요했을까?"],
+      [4,"고려 사람들의 생활","귀족 · 백성 · 불교","신분에 따라 생활은 어떻게 달랐을까?"],
+      [4,"고려와 외침","외침 · 항쟁 · 몽골","다른 나라가 침략하면 백성들은 어떻게 될까?"],
+      [4,"고려에서 조선으로","개혁 · 왕조 · 조선","사람들은 왜 새로운 나라를 원했을까?"],
+      [4,"세종과 훈민정음","백성 · 훈민정음 · 창제","왜 새로운 글자가 필요했을까?"],
+      [5,"조선 사람들의 생활","양반 · 상민 · 신분","신분제 사회에서 불편한 점은 무엇일까?"],
+      [5,"임진왜란","침략 · 의병 · 전쟁","전쟁은 평범한 사람들의 삶을 어떻게 바꿀까?"],
+      [5,"조선 후기의 변화","상업 · 시장 · 변화","경제가 달라지면 사회도 왜 달라질까?"],
+      [5,"개항과 외국 문물","개항 · 조약 · 교류","외국과 문을 연다는 건 어떤 의미일까?"],
+      [6,"일제강점기","식민지 · 항일 · 독립","나라를 빼앗기면 어떤 일이 생길까?"],
+      [6,"독립운동","의병 · 독립운동 · 3·1운동","사람들은 왜 위험을 감수하고 독립운동을 했을까?"],
+      [6,"광복과 대한민국","광복 · 정부 · 대한민국","광복은 왜 단순히 전쟁이 끝난 것과 다를까?"],
+      [6,"한국사 전체 연결","시대 · 왕조 · 변화","고조선부터 대한민국까지 내 말로 설명해보자!"]
+    ];
+
+    const STORAGE_KEY = "heeyoon-history-board-v1";
+    const defaultState = { weeks:{}, activities:{} };
+
+    function loadState(){
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone ? structuredClone(defaultState) : JSON.parse(JSON.stringify(defaultState));
+        const parsed = JSON.parse(raw);
+        return { weeks: parsed.weeks || {}, activities: parsed.activities || {} };
+      } catch(e) {
+        return { weeks:{}, activities:{} };
+      }
+    }
+    let state = loadState();
+
+    const weeksEl = document.getElementById("weeks");
+
+    function saveState(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      updateStats();
+    }
+
+    function renderWeeks(){
+      weeksEl.innerHTML = "";
+      curriculum.forEach((item, idx) => {
+        const weekNum = idx + 1;
+        const month = item[0];
+        const card = document.createElement("article");
+        card.className = "week" + (state.weeks[weekNum] ? " done" : "");
+        card.dataset.month = month;
+        card.innerHTML = `
+          <div class="top">
+            <div>
+              <div class="week-no">${month}개월차 · ${weekNum}주</div>
+              <h3>${item[1]}</h3>
+            </div>
+            <input class="check week-check" type="checkbox" ${state.weeks[weekNum] ? "checked" : ""} aria-label="${weekNum}주 완료">
+          </div>
+          <div class="words"><b>핵심어휘</b> · ${item[2]}</div>
+          <div class="question">💬 ${item[3]}</div>
+          <div class="mini">
+            ${["이야기","한자어","5분대화"].map((name, aidx) => {
+              const key = `${weekNum}-${aidx}`;
+              return `<label><input type="checkbox" class="activity-check" data-key="${key}" ${state.activities[key] ? "checked" : ""}> ${name}</label>`;
+            }).join("")}
+          </div>
+        `;
+
+        const weekCheck = card.querySelector(".week-check");
+        weekCheck.addEventListener("change", () => {
+          state.weeks[weekNum] = weekCheck.checked;
+          card.classList.toggle("done", weekCheck.checked);
+          saveState();
+        });
+
+        card.querySelectorAll(".activity-check").forEach(cb => {
+          cb.addEventListener("change", () => {
+            state.activities[cb.dataset.key] = cb.checked;
+            saveState();
+          });
+        });
+
+        weeksEl.appendChild(card);
+      });
+    }
+
+    function updateStats(){
+      const done = Object.values(state.weeks).filter(Boolean).length;
+      const acts = Object.values(state.activities).filter(Boolean).length;
+      const pct = Math.round(done / 24 * 100);
+      document.getElementById("doneCount").textContent = done;
+      document.getElementById("todoCount").textContent = 24 - done;
+      document.getElementById("studyCount").textContent = acts;
+      document.getElementById("progressText").textContent = `${pct}% · ${done}/24주`;
+      document.getElementById("progressBar").style.width = pct + "%";
+    }
+
+    document.querySelectorAll(".filter").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const filter = btn.dataset.filter;
+        document.querySelectorAll(".week").forEach(card => {
+          card.classList.toggle("hidden", !(filter === "all" || card.dataset.month === filter));
+        });
+      });
+    });
+
+    document.getElementById("showAllBtn").addEventListener("click", () => {
+      document.querySelector('[data-filter="all"]').click();
+      window.scrollTo({top: document.querySelector(".filters").offsetTop - 10, behavior:"smooth"});
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      if (!confirm("24주 학습 체크를 모두 초기화할까요?")) return;
+      state = { weeks:{}, activities:{} };
+      saveState();
+      renderWeeks();
+      updateStats();
+    });
+
+    renderWeeks();
+    updateStats();
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
