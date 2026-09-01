@@ -1,320 +1,157 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#17345f" />
-  <meta name="description" content="초4에서 초5로 올라가기 전, 한국사를 재미있게 준비하는 24주 학습 보드" />
-  <link rel="manifest" href="./manifest.json" />
-  <link rel="icon" href="./icons/icon-192.png" />
-  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-  <title>희윤이 한국사 24주 준비보드</title>
-  <style>
-    :root{
-      --bg:#f4f7fb; --card:#ffffff; --text:#172033; --muted:#687386;
-      --navy:#17345f; --blue:#2e67b1; --line:#dce4ef; --soft:#eaf1fb;
-      --green:#2f7d5b; --gold:#9b6b1c; --danger:#a33b3b;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Roboto,sans-serif;
-      background:var(--bg); color:var(--text);
-    }
-    button,input{font:inherit}
-    .app{max-width:980px;margin:0 auto;padding:20px 14px 48px}
-    .hero{
-      background:linear-gradient(145deg,#17345f,#2d5c95);
-      color:white;border-radius:24px;padding:22px;position:relative;overflow:hidden;
-    }
-    .hero:after{
-      content:""; position:absolute; width:180px; height:180px; border-radius:50%;
-      background:rgba(255,255,255,.07); right:-55px; top:-70px;
-    }
-    .eyebrow{font-size:13px;opacity:.84;margin-bottom:6px}
-    h1{margin:0;font-size:28px;line-height:1.25}
-    .sub{margin:9px 0 0;font-size:14px;line-height:1.65;opacity:.9}
-    .progress-wrap{
-      margin-top:20px;background:rgba(255,255,255,.12);padding:13px;border-radius:16px
-    }
-    .progress-row{display:flex;justify-content:space-between;gap:12px;font-size:14px}
-    .bar{height:10px;background:rgba(255,255,255,.22);border-radius:999px;margin-top:9px;overflow:hidden}
-    .bar > div{height:100%;width:0;background:#fff;border-radius:999px;transition:width .25s ease}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
-    .stat{background:rgba(255,255,255,.11);padding:10px;border-radius:13px;text-align:center}
-    .stat strong{display:block;font-size:19px}.stat span{font-size:11px;opacity:.82}
-
-    .section-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:24px 2px 10px}
-    .section-title h2{font-size:18px;margin:0}
-    .section-title p{font-size:12px;color:var(--muted);margin:3px 0 0}
-    .routine{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .routine-card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:14px}
-    .routine-card b{font-size:14px}.routine-card p{font-size:12px;color:var(--muted);line-height:1.55;margin:6px 0 0}
-
-    .filters{display:flex;gap:8px;overflow:auto;padding:2px 1px 6px;scrollbar-width:none}
-    .filters::-webkit-scrollbar{display:none}
-    .filter{
-      border:1px solid var(--line);background:white;color:var(--text);
-      border-radius:999px;padding:9px 13px;white-space:nowrap;cursor:pointer
-    }
-    .filter.active{background:var(--navy);color:#fff;border-color:var(--navy)}
-
-    .weeks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-    .week{
-      background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;
-      transition:.18s ease;
-    }
-    .week.done{border-color:#b9d8c8;background:#fbfefc}
-    .top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-    .week-no{font-size:11px;color:var(--muted);margin-bottom:4px}
-    .week h3{font-size:16px;margin:0}
-    .check{
-      appearance:none;width:25px;height:25px;border:2px solid #b7c2d1;border-radius:8px;
-      display:grid;place-items:center;cursor:pointer;flex:none;background:#fff
-    }
-    .check:checked{background:var(--green);border-color:var(--green)}
-    .check:checked:after{content:"✓";color:white;font-weight:800;font-size:16px}
-    .words{font-size:13px;margin-top:12px;line-height:1.6}
-    .words b{color:var(--navy)}
-    .question{
-      margin-top:9px;padding:10px 11px;background:var(--soft);border-radius:12px;
-      color:#315177;font-size:12px;line-height:1.55
-    }
-    .mini{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-    .mini label{
-      display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);
-      background:#f8fafc;border:1px solid var(--line);padding:6px 8px;border-radius:999px
-    }
-
-    .rules{
-      background:white;border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:12px
-    }
-    .rules-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}
-    .rule{font-size:13px;color:#425067}
-    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-    .btn{
-      border:1px solid var(--line);background:white;border-radius:11px;padding:10px 12px;cursor:pointer
-    }
-    .btn.primary{background:var(--navy);border-color:var(--navy);color:white}
-    .btn.danger{color:var(--danger)}
-    .install-note{
-      margin-top:16px;background:#fff9eb;border:1px solid #f1dfb3;color:#6e5725;
-      border-radius:15px;padding:13px;font-size:12px;line-height:1.6
-    }
-    .hidden{display:none!important}
-    footer{text-align:center;color:var(--muted);font-size:11px;margin-top:26px}
-
-    @media(max-width:680px){
-      .app{padding:12px 10px 36px}
-      .hero{border-radius:20px;padding:18px}
-      h1{font-size:23px}
-      .routine{grid-template-columns:1fr}
-      .weeks{grid-template-columns:1fr}
-      .rules-grid{grid-template-columns:1fr}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17345f">
+<meta name="description" content="초4에서 초5로 올라가기 전 한국사 이해를 돕는 24주 학습보드">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<title>희윤이 한국사 24주 준비보드 V2</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#687386;--navy:#17345f;--blue:#2e67b1;--line:#dce4ef;--soft:#eaf1fb;--green:#2f7d5b;--danger:#a33b3b;--story:#fffaf0}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+button,input,a{font:inherit} a{color:inherit}
+.app{max-width:980px;margin:0 auto;padding:20px 14px 48px}
+.hero{background:linear-gradient(145deg,#17345f,#2d5c95);color:#fff;border-radius:24px;padding:22px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.07);right:-55px;top:-70px}
+.eyebrow{font-size:13px;opacity:.84;margin-bottom:6px}h1{margin:0;font-size:28px;line-height:1.25}
+.sub{margin:9px 0 0;font-size:14px;line-height:1.65;opacity:.92}.school-note{margin-top:8px;font-size:12px;opacity:.8}
+.progress-wrap{margin-top:20px;background:rgba(255,255,255,.12);padding:13px;border-radius:16px}
+.progress-row{display:flex;justify-content:space-between;gap:12px;font-size:14px}
+.bar{height:10px;background:rgba(255,255,255,.22);border-radius:999px;margin-top:9px;overflow:hidden}.bar>div{height:100%;width:0;background:#fff;border-radius:999px;transition:width .25s}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.stat{background:rgba(255,255,255,.11);padding:10px;border-radius:13px;text-align:center}
+.stat strong{display:block;font-size:19px}.stat span{font-size:11px;opacity:.82}
+.section-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:24px 2px 10px}.section-title h2{font-size:18px;margin:0}
+.section-title p{font-size:12px;color:var(--muted);margin:3px 0 0;line-height:1.5}
+.routine{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.routine-card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:14px}
+.routine-card b{font-size:14px}.routine-card p{font-size:12px;color:var(--muted);line-height:1.55;margin:6px 0 0}
+.filters{display:flex;gap:8px;overflow:auto;padding:2px 1px 6px;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}
+.filter{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:999px;padding:9px 13px;white-space:nowrap;cursor:pointer}
+.filter.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.weeks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.week{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;transition:.18s ease;min-width:0}
+.week.done{border-color:#b9d8c8;background:#fbfefc}
+.top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.title-button{padding:0;border:0;background:transparent;text-align:left;color:inherit;cursor:pointer;min-width:0;flex:1}
+.week-no{font-size:11px;color:var(--muted);margin-bottom:4px}.title-line{display:flex;align-items:center;gap:7px}.week h3{font-size:16px;margin:0;line-height:1.35}
+.chev{font-size:12px;color:var(--muted);transition:transform .2s}.week.open .chev{transform:rotate(180deg)}
+.check{appearance:none;width:25px;height:25px;border:2px solid #b7c2d1;border-radius:8px;display:grid;place-items:center;cursor:pointer;flex:none;background:#fff}
+.check:checked{background:var(--green);border-color:var(--green)}.check:checked:after{content:"✓";color:#fff;font-weight:800;font-size:16px}
+.words{font-size:13px;margin-top:12px;line-height:1.6}.words b{color:var(--navy)}
+.question{margin-top:9px;padding:10px 11px;background:var(--soft);border-radius:12px;color:#315177;font-size:12px;line-height:1.55}
+.mini{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.mini label{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);background:#f8fafc;border:1px solid var(--line);padding:6px 8px;border-radius:999px}
+.open-hint{font-size:11px;color:var(--blue);font-weight:700;margin-top:9px}
+.detail{display:none;margin-top:14px;border-top:1px dashed var(--line);padding-top:14px}.week.open .detail{display:block}
+.detail-section{margin-top:14px}.detail-section:first-child{margin-top:0}.detail-title{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:7px}
+.story{background:var(--story);border:1px solid #f0dfb8;border-radius:14px;padding:13px;font-size:13px;line-height:1.8}
+.vocab-list{display:grid;gap:7px}.vocab{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fafcff;font-size:12px;line-height:1.55}
+.vocab strong{font-size:13px}.hanja{color:var(--blue);font-weight:700;margin-left:5px}
+.resource{border:1px solid var(--line);border-radius:13px;padding:11px;margin-top:7px;background:#fff}.resource-name{font-weight:750;font-size:13px}
+.resource-desc{font-size:12px;color:var(--muted);line-height:1.55;margin-top:4px}.resource-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.resource a{display:inline-block;text-decoration:none;background:var(--navy);color:#fff;border-radius:9px;padding:8px 10px;font-size:12px}
+.resource a.secondary{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.parent-q{margin:6px 0;padding-left:2px;font-size:13px;line-height:1.6}.takeaway{background:#edf8f2;border:1px solid #cbe6d8;border-radius:12px;padding:11px;font-size:13px;line-height:1.6;color:#255e47}
+.quiz-item{border-top:1px solid var(--line);padding:11px 0}.quiz-item:first-child{border-top:0;padding-top:0}.quiz-q{font-size:13px;font-weight:700;line-height:1.5}
+.opts{display:grid;gap:6px;margin-top:7px}.opt{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 10px;text-align:left;font-size:12px;cursor:pointer}
+.opt.correct{border-color:#75b896;background:#eef9f3}.opt.wrong{border-color:#dda3a3;background:#fff2f2}.feedback{font-size:11px;margin-top:6px;min-height:16px;color:var(--muted)}
+.rules{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:12px}.rules-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}.rule{font-size:13px;color:#425067}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.btn{border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px 12px;cursor:pointer}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}.btn.danger{color:var(--danger)}
+.notice{margin-top:14px;background:#fff9eb;border:1px solid #f1dfb3;color:#6e5725;border-radius:15px;padding:13px;font-size:12px;line-height:1.65}
+.source-note{margin-top:10px;font-size:11px;color:var(--muted);line-height:1.6}.hidden{display:none!important}footer{text-align:center;color:var(--muted);font-size:11px;margin-top:26px}
+@media(max-width:680px){.app{padding:12px 10px 36px}.hero{border-radius:20px;padding:18px}h1{font-size:23px}.routine{grid-template-columns:1fr}.weeks{grid-template-columns:1fr}.rules-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-  <main class="app">
-    <section class="hero">
-      <div class="eyebrow">초4 → 초5 · 한국사 선행이 아닌 '이해 준비'</div>
-      <h1>희윤이 한국사 24주 준비보드</h1>
-      <p class="sub">주 3회, 한 번에 15~20분. 연도 암기보다 <b>역사 흐름 · 한자어 · 원인과 결과</b>를 익혀요.</p>
-      <div class="progress-wrap">
-        <div class="progress-row"><span>전체 진행률</span><strong id="progressText">0% · 0/24주</strong></div>
-        <div class="bar"><div id="progressBar"></div></div>
-        <div class="stats">
-          <div class="stat"><strong id="doneCount">0</strong><span>완료한 주</span></div>
-          <div class="stat"><strong id="todoCount">24</strong><span>남은 주</span></div>
-          <div class="stat"><strong id="studyCount">0</strong><span>활동 체크</span></div>
-        </div>
-      </div>
-    </section>
+<main class="app">
+<section class="hero">
+<div class="eyebrow">초4 → 초5 · 한국사 선행이 아닌 ‘이해 준비’</div>
+<h1>희윤이 한국사 24주 준비보드 <small style="font-size:.45em;opacity:.75">V2</small></h1>
+<p class="sub">주 3회, 한 번에 15~20분. 연도 암기보다 <b>역사 흐름 · 한자어 · 원인과 결과</b>를 익혀요.</p>
+<div class="school-note">진주 금산초 5학년 사회 진입 전 배경지식용 · 실제 5학년 교과서 확인 전에는 특정 출판사 진도와 1:1 일치한다고 보지 않아요.</div>
+<div class="progress-wrap">
+<div class="progress-row"><span>전체 진행률</span><strong id="progressText">0% · 0/24주</strong></div>
+<div class="bar"><div id="progressBar"></div></div>
+<div class="stats"><div class="stat"><strong id="doneCount">0</strong><span>완료한 주</span></div><div class="stat"><strong id="todoCount">24</strong><span>남은 주</span></div><div class="stat"><strong id="studyCount">0</strong><span>활동 체크</span></div></div>
+</div>
+</section>
 
-    <div class="section-title">
-      <div><h2>매주 이렇게 해요</h2><p>모든 활동을 다 못 해도 괜찮아요.</p></div>
-    </div>
-    <section class="routine">
-      <div class="routine-card"><b>① 이야기 만나기</b><p>역사책이나 영상으로 이번 주 시대를 10~15분 가볍게 접하기</p></div>
-      <div class="routine-card"><b>② 한자어 3개</b><p>뜻을 풀어보고 실제 역사 속에서 어떤 뜻으로 쓰였는지 이야기하기</p></div>
-      <div class="routine-card"><b>③ 5분 대화</b><p>“왜 그랬을까?” “그 뒤에 무엇이 달라졌을까?”를 부모와 이야기하기</p></div>
-    </section>
+<div class="section-title"><div><h2>매주 이렇게 해요</h2><p>부모가 자료를 매번 준비하지 않아도 주차 제목을 누르면 학습 내용이 나옵니다.</p></div></div>
+<section class="routine">
+<div class="routine-card"><b>① 이야기 만나기</b><p>사이트 안의 3~5분 분량 짧은 글을 먼저 읽어요. 이것만으로도 한 주의 기본 학습이 됩니다.</p></div>
+<div class="routine-card"><b>② 책·영상은 선택</b><p>집에 있는 <b>용선생 처음 한국사 1·2</b>와 EBS를 필요한 만큼만 연결해요.</p></div>
+<div class="routine-card"><b>③ 말로 생각하기</b><p>한자어 뜻을 확인하고 “왜?”를 5분 이야기한 뒤 3문제로 가볍게 마무리해요.</p></div>
+</section>
 
-    <div class="section-title">
-      <div><h2>24주 보드</h2><p>완료하면 체크하세요. 상태는 이 휴대폰에 자동 저장됩니다.</p></div>
-    </div>
-    <nav class="filters" aria-label="월별 보기">
-      <button class="filter active" data-filter="all">전체</button>
-      <button class="filter" data-filter="1">1개월</button>
-      <button class="filter" data-filter="2">2개월</button>
-      <button class="filter" data-filter="3">3개월</button>
-      <button class="filter" data-filter="4">4개월</button>
-      <button class="filter" data-filter="5">5개월</button>
-      <button class="filter" data-filter="6">6개월</button>
-    </nav>
+<div class="section-title"><div><h2>24주 보드</h2><p><b>주차 제목을 터치</b>하면 이야기 · 한자어 · 책 · 영상 · 부모 질문 · 퀴즈가 펼쳐집니다.</p></div></div>
+<nav class="filters" aria-label="월별 보기">
+<button class="filter active" data-filter="all">전체</button>
+<button class="filter" data-filter="1">1개월</button><button class="filter" data-filter="2">2개월</button><button class="filter" data-filter="3">3개월</button>
+<button class="filter" data-filter="4">4개월</button><button class="filter" data-filter="5">5개월</button><button class="filter" data-filter="6">6개월</button>
+</nav>
+<section id="weeks" class="weeks"></section>
 
-    <section id="weeks" class="weeks" aria-live="polite"></section>
+<div class="section-title"><div><h2>부모용 운영 원칙</h2><p>책·영상은 보조자료입니다. 다 하지 않아도 괜찮고, 사이트 이야기 + 대화만으로도 진행할 수 있습니다.</p></div></div>
+<section class="rules">
+<div class="rules-grid">
+<div class="rule">✓ 연도·왕 이름 줄암기 하지 않기</div><div class="rule">✓ 아이가 제목을 직접 눌러 학습 시작하기</div>
+<div class="rule">✓ 한자어는 ‘뜻 → 역사 속 쓰임’ 순서</div><div class="rule">✓ 퀴즈 점수보다 이유 설명을 더 중요하게 보기</div>
+<div class="rule">✓ 하루에 여러 주차 몰아서 하지 않기</div><div class="rule">✓ 5학년 교과서를 받으면 단원 순서를 다시 맞추기</div>
+</div>
+<div class="actions"><button id="collapseBtn" class="btn primary" type="button">펼친 내용 모두 접기</button><button id="resetBtn" class="btn danger" type="button">모든 학습 기록 초기화</button></div>
+<div class="notice"><b>진도 저장 안내</b><br>V2는 새 저장공간을 사용하므로 지금까지의 테스트 체크는 가져오지 않습니다. <b>V2부터 실제 학습 기록으로 간주</b>하며, 이후 업데이트에서는 이 저장공간과 데이터 구조를 유지해 체크·퀴즈 기록이 남도록 업데이트하면 됩니다.</div>
+<div class="source-note">추천 자료: EBS ‘역사가 술술’, EBS ‘초등 스토리 한국사(1)(2)’, 사회평론 ‘용선생 처음 한국사 1·2’. 책 페이지는 판본에 따라 다를 수 있어 ‘관련 주제’로 안내합니다.</div>
+</section>
+<footer>희윤이 학습도우미 · 한국사 24주 준비보드 V2</footer>
+</main>
 
-    <div class="section-title">
-      <div><h2>부모용 운영 원칙</h2><p>시험처럼 확인하기보다 아이가 자기 말로 설명하게 해주세요.</p></div>
-    </div>
-    <section class="rules">
-      <div class="rules-grid">
-        <div class="rule">✓ 연도·왕 이름 줄줄 외우지 않기</div>
-        <div class="rule">✓ 지도에서 위치 한 번 찾아보기</div>
-        <div class="rule">✓ 한자어 뜻을 먼저 이해하기</div>
-        <div class="rule">✓ 못 한 주를 다음 주에 몰아서 하지 않기</div>
-      </div>
-      <div class="actions">
-        <button id="showAllBtn" class="btn primary" type="button">전체 주차 보기</button>
-        <button id="resetBtn" class="btn danger" type="button">모든 체크 초기화</button>
-      </div>
-      <div class="install-note">
-        <b>📱 앱처럼 쓰는 법</b><br>
-        iPhone Safari: 공유 버튼 → <b>홈 화면에 추가</b><br>
-        Android Chrome: 메뉴(⋮) → <b>홈 화면에 추가</b> 또는 <b>앱 설치</b>
-      </div>
-    </section>
-
-    <footer>희윤이 학습도우미 · 한국사 24주 준비보드</footer>
-  </main>
-
-  <script>
-    const curriculum = [
-      [1,"역사와 시간","시대 · 과거 · 현재","옛날과 지금은 무엇이 달라졌을까?"],
-      [1,"나라와 왕조","국가 · 왕조 · 건국","나라가 새로 생긴다는 건 무슨 뜻일까?"],
-      [1,"지도 읽기","수도 · 영토 · 국경","수도는 왜 중요한 곳일까?"],
-      [1,"사건의 원인과 결과","원인 · 결과 · 변화","어떤 일이 생기면 그 뒤에는 무엇이 달라질까?"],
-      [2,"구석기 시대","사냥 · 채집 · 이동","왜 한곳에 오래 살기 어려웠을까?"],
-      [2,"신석기 시대","농경 · 정착 · 움집","농사를 지으면 생활이 어떻게 달라질까?"],
-      [2,"청동기와 고조선","계급 · 지배 · 건국","왜 힘센 사람이 생기기 시작했을까?"],
-      [2,"고구려·백제·신라","삼국 · 영토 · 경쟁","세 나라는 왜 서로 경쟁했을까?"],
-      [3,"삼국의 성장","정복 · 교류 · 문화","영토가 넓어지면 좋은 점과 어려운 점은?"],
-      [3,"삼국 통일 과정","동맹 · 전쟁 · 통일","신라는 어떻게 삼국을 통일했을까?"],
-      [3,"통일신라와 발해","통일 · 발해 · 계승","같은 시대에 두 나라가 존재했다는 건?"],
-      [3,"고려의 건국","후삼국 · 왕건 · 고려","새 왕조는 왜 사람들의 지지가 필요했을까?"],
-      [4,"고려 사람들의 생활","귀족 · 백성 · 불교","신분에 따라 생활은 어떻게 달랐을까?"],
-      [4,"고려와 외침","외침 · 항쟁 · 몽골","다른 나라가 침략하면 백성들은 어떻게 될까?"],
-      [4,"고려에서 조선으로","개혁 · 왕조 · 조선","사람들은 왜 새로운 나라를 원했을까?"],
-      [4,"세종과 훈민정음","백성 · 훈민정음 · 창제","왜 새로운 글자가 필요했을까?"],
-      [5,"조선 사람들의 생활","양반 · 상민 · 신분","신분제 사회에서 불편한 점은 무엇일까?"],
-      [5,"임진왜란","침략 · 의병 · 전쟁","전쟁은 평범한 사람들의 삶을 어떻게 바꿀까?"],
-      [5,"조선 후기의 변화","상업 · 시장 · 변화","경제가 달라지면 사회도 왜 달라질까?"],
-      [5,"개항과 외국 문물","개항 · 조약 · 교류","외국과 문을 연다는 건 어떤 의미일까?"],
-      [6,"일제강점기","식민지 · 항일 · 독립","나라를 빼앗기면 어떤 일이 생길까?"],
-      [6,"독립운동","의병 · 독립운동 · 3·1운동","사람들은 왜 위험을 감수하고 독립운동을 했을까?"],
-      [6,"광복과 대한민국","광복 · 정부 · 대한민국","광복은 왜 단순히 전쟁이 끝난 것과 다를까?"],
-      [6,"한국사 전체 연결","시대 · 왕조 · 변화","고조선부터 대한민국까지 내 말로 설명해보자!"]
-    ];
-
-    const STORAGE_KEY = "heeyoon-history-board-v1";
-    const defaultState = { weeks:{}, activities:{} };
-
-    function loadState(){
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return structuredClone ? structuredClone(defaultState) : JSON.parse(JSON.stringify(defaultState));
-        const parsed = JSON.parse(raw);
-        return { weeks: parsed.weeks || {}, activities: parsed.activities || {} };
-      } catch(e) {
-        return { weeks:{}, activities:{} };
-      }
-    }
-    let state = loadState();
-
-    const weeksEl = document.getElementById("weeks");
-
-    function saveState(){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      updateStats();
-    }
-
-    function renderWeeks(){
-      weeksEl.innerHTML = "";
-      curriculum.forEach((item, idx) => {
-        const weekNum = idx + 1;
-        const month = item[0];
-        const card = document.createElement("article");
-        card.className = "week" + (state.weeks[weekNum] ? " done" : "");
-        card.dataset.month = month;
-        card.innerHTML = `
-          <div class="top">
-            <div>
-              <div class="week-no">${month}개월차 · ${weekNum}주</div>
-              <h3>${item[1]}</h3>
-            </div>
-            <input class="check week-check" type="checkbox" ${state.weeks[weekNum] ? "checked" : ""} aria-label="${weekNum}주 완료">
-          </div>
-          <div class="words"><b>핵심어휘</b> · ${item[2]}</div>
-          <div class="question">💬 ${item[3]}</div>
-          <div class="mini">
-            ${["이야기","한자어","5분대화"].map((name, aidx) => {
-              const key = `${weekNum}-${aidx}`;
-              return `<label><input type="checkbox" class="activity-check" data-key="${key}" ${state.activities[key] ? "checked" : ""}> ${name}</label>`;
-            }).join("")}
-          </div>
-        `;
-
-        const weekCheck = card.querySelector(".week-check");
-        weekCheck.addEventListener("change", () => {
-          state.weeks[weekNum] = weekCheck.checked;
-          card.classList.toggle("done", weekCheck.checked);
-          saveState();
-        });
-
-        card.querySelectorAll(".activity-check").forEach(cb => {
-          cb.addEventListener("change", () => {
-            state.activities[cb.dataset.key] = cb.checked;
-            saveState();
-          });
-        });
-
-        weeksEl.appendChild(card);
-      });
-    }
-
-    function updateStats(){
-      const done = Object.values(state.weeks).filter(Boolean).length;
-      const acts = Object.values(state.activities).filter(Boolean).length;
-      const pct = Math.round(done / 24 * 100);
-      document.getElementById("doneCount").textContent = done;
-      document.getElementById("todoCount").textContent = 24 - done;
-      document.getElementById("studyCount").textContent = acts;
-      document.getElementById("progressText").textContent = `${pct}% · ${done}/24주`;
-      document.getElementById("progressBar").style.width = pct + "%";
-    }
-
-    document.querySelectorAll(".filter").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".filter").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        const filter = btn.dataset.filter;
-        document.querySelectorAll(".week").forEach(card => {
-          card.classList.toggle("hidden", !(filter === "all" || card.dataset.month === filter));
-        });
-      });
-    });
-
-    document.getElementById("showAllBtn").addEventListener("click", () => {
-      document.querySelector('[data-filter="all"]').click();
-      window.scrollTo({top: document.querySelector(".filters").offsetTop - 10, behavior:"smooth"});
-    });
-
-    document.getElementById("resetBtn").addEventListener("click", () => {
-      if (!confirm("24주 학습 체크를 모두 초기화할까요?")) return;
-      state = { weeks:{}, activities:{} };
-      saveState();
-      renderWeeks();
-      updateStats();
-    });
-
-    renderWeeks();
-    updateStats();
-
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch(() => {});
-      });
-    }
-  </script>
+<script>
+const curriculum = [{"m": 1, "title": "역사와 시간", "keywords": "시대 · 과거 · 현재", "story": "역사는 아주 오래된 일을 무작정 외우는 공부가 아니에요. 사람들은 ‘언제 있었던 일인지’를 알기 위해 사건을 시간 순서대로 놓습니다. 어제보다 오늘이 뒤에 있고, 고려보다 조선이 뒤에 있는 것처럼요. 앞으로 한국사를 볼 때는 ‘몇 년?’보다 먼저 ‘무엇이 먼저이고 무엇이 나중인지’를 생각해 봐요.", "words": [["시대", "時代", "공통된 특징을 가진 일정한 시간의 구간"], ["과거", "過去", "이미 지나간 때"], ["현재", "現在", "지금 우리가 살고 있는 때"]], "video": ["역사가 술술", "아무 인물 편 1편을 골라 그 사람이 어느 시대 사람인지 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10202560"], "book": ["용선생 처음 한국사 1", "책 앞쪽의 연표나 목차를 보며 시대 순서만 가볍게 훑어보기", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["오늘 하루의 일을 시간 순서대로 말해볼까?", "삼국 시대와 조선 시대 중 무엇이 먼저일까?"], "takeaway": "역사는 사건을 시간 순서로 연결해서 이해하는 공부다.", "quiz": [["역사를 이해할 때 먼저 도움이 되는 것은?", ["사건의 순서", "모든 연도 암기", "왕 이름 100개 외우기"], 0], ["‘과거’의 뜻은?", ["앞으로 올 때", "이미 지나간 때", "바로 지금"], 1], ["조선보다 먼저 있었던 나라는?", ["대한민국", "고려", "미래의 나라"], 1]]}, {"m": 1, "title": "나라와 왕조", "keywords": "국가 · 왕조 · 건국", "story": "옛날에도 사람들은 함께 살아가기 위해 규칙을 만들고 지도자를 세웠어요. 일정한 땅과 사람, 다스리는 조직을 갖춘 공동체를 나라 또는 국가라고 합니다. 왕이 다스리던 시대에는 같은 왕의 집안이 여러 세대에 걸쳐 나라를 이어가기도 했는데, 이를 왕조라고 해요. 고려 왕조가 끝나고 조선 왕조가 시작된 것처럼 왕조가 바뀌면 나라의 이름과 제도도 크게 달라질 수 있습니다.", "words": [["국가", "國家", "일정한 영토와 국민, 통치 조직을 가진 나라"], ["왕조", "王朝", "같은 왕가가 이어서 나라를 다스리는 체제"], ["건국", "建國", "새로운 나라를 세움"]], "video": ["역사가 술술", "왕건·이성계처럼 ‘나라를 세운 인물’ 관련 편 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10202560"], "book": ["용선생 처음 한국사 1", "목차에서 고려와 조선이 시작되는 부분을 찾아 제목 비교하기", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["새 나라를 세우려면 무엇이 필요할까?", "왕조가 바뀌면 사람들의 생활도 바로 모두 달라질까?"], "takeaway": "건국은 새 나라를 세우는 것이고, 왕조는 왕의 집안이 나라를 이어 다스리는 체제다.", "quiz": [["‘건국’은 무슨 뜻일까?", ["나라를 세움", "나라를 떠남", "전쟁을 끝냄"], 0], ["고려 다음 왕조는?", ["조선", "고구려", "신라"], 0], ["국가를 설명한 것으로 알맞은 것은?", ["친구 모임", "영토와 사람, 통치 조직을 가진 공동체", "한 가족"], 1]]}, {"m": 1, "title": "지도 읽기", "keywords": "수도 · 영토 · 국경", "story": "역사는 ‘언제’뿐 아니라 ‘어디에서’ 일어났는지도 중요해요. 나라가 다스리는 땅을 영토라고 하고, 다른 나라와 맞닿는 경계를 국경이라고 합니다. 왕과 정부가 나라의 중요한 일을 결정하는 중심 도시는 수도예요. 고구려·백제·신라는 자리한 곳이 달랐고, 고려의 수도는 개경, 조선의 수도는 한양이었습니다. 역사책을 볼 때 지도에서 장소를 한 번 찾아보는 습관만 있어도 이야기가 훨씬 쉽게 연결됩니다.", "words": [["수도", "首都", "나라의 정치 중심이 되는 도시"], ["영토", "領土", "나라가 다스리는 땅"], ["국경", "國境", "나라와 나라 사이의 경계"]], "video": ["역사가 술술", "고구려·백제·신라 관련 편을 보며 지도에서 위치 확인하기", "https://primary.ebs.co.kr/course/view?courseId=10202560"], "book": ["용선생 처음 한국사 1", "삼국 지도와 고려·조선의 수도가 표시된 지도를 찾아보기", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["서울은 지금 우리나라에서 어떤 역할을 할까?", "고구려가 북쪽에 있었다는 사실은 왜 중요할까?"], "takeaway": "역사 사건은 지도에서 위치까지 함께 보면 이해가 쉬워진다.", "quiz": [["나라의 정치 중심 도시는?", ["수도", "국경", "영토"], 0], ["나라가 다스리는 땅은?", ["왕조", "영토", "시대"], 1], ["고려의 수도는?", ["개경", "경주", "부여"], 0]]}, {"m": 1, "title": "사건의 원인과 결과", "keywords": "원인 · 결과 · 변화", "story": "역사에는 갑자기 하늘에서 떨어진 사건이 거의 없어요. 어떤 일이 일어난 까닭을 원인, 그 일 때문에 생긴 일을 결과라고 합니다. 예를 들어 다른 나라가 침략하면 전쟁이 일어나고, 전쟁 뒤에는 도시가 파괴되거나 사람들의 생활이 달라질 수 있어요. ‘무슨 일이 있었지?’에서 끝내지 않고 ‘왜 생겼지?’와 ‘그 뒤에는 뭐가 달라졌지?’를 묻는 습관이 한국사를 잘 이해하는 힘입니다.", "words": [["원인", "原因", "어떤 일이 생기게 된 까닭"], ["결과", "結果", "어떤 일 뒤에 생긴 상태나 사실"], ["변화", "變化", "이전과 달라짐"]], "video": ["역사가 술술", "전쟁이나 개혁을 다룬 편을 하나 보고 원인·결과 찾기", "https://primary.ebs.co.kr/course/view?courseId=10202560"], "book": ["용선생 처음 한국사 1", "아무 사건 하나를 골라 ‘왜?’와 ‘그 뒤?’를 말해보기", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["비가 많이 오면 우리 생활에는 어떤 결과가 생길까?", "전쟁이 일어나는 데에는 어떤 원인이 있을까?"], "takeaway": "역사는 ‘원인 → 사건 → 결과’로 생각하면 흐름이 보인다.", "quiz": [["어떤 일이 생기게 된 까닭은?", ["결과", "원인", "시대"], 1], ["사건 뒤에 생긴 상태는?", ["결과", "국경", "건국"], 0], ["역사를 깊이 이해하는 질문은?", ["몇 글자인가?", "왜 생겼고 무엇이 달라졌나?", "책 표지는 무슨 색인가?"], 1]]}, {"m": 2, "title": "구석기 시대", "keywords": "사냥 · 채집 · 이동", "story": "아주 먼 옛날 구석기 사람들은 농사를 짓지 않았어요. 주변에서 열매와 식물을 모으고 동물을 사냥하며 먹을 것을 구했습니다. 한곳의 먹을 것이 줄어들면 다른 곳으로 옮겨가야 했기 때문에 이동 생활을 했어요. 돌을 깨뜨려 만든 뗀석기를 사용했고, 동굴이나 막집에서 머물기도 했습니다. 구석기 생활의 핵심은 ‘먹을 것을 자연에서 구하며 이동했다’는 점이에요.", "words": [["사냥", "狩獵", "야생 동물을 잡는 일"], ["채집", "採集", "자연에서 열매나 식물 등을 모음"], ["이동", "移動", "한 장소에서 다른 장소로 옮김"]], "video": ["역사가 술술", "‘구석기’ 또는 ‘선사 시대’ 관련 편 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10202560"], "book": ["용선생 처음 한국사 1", "선사 시대 중 구석기 생활 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["구석기 사람들은 왜 이사를 자주 했을까?", "마트가 없던 시대에는 먹을 것을 어떻게 구했을까?"], "takeaway": "구석기 사람들은 사냥과 채집을 하며 먹을 것을 따라 이동했다.", "quiz": [["구석기 사람들의 대표 생활은?", ["이동 생활", "아파트 생활", "공장 생활"], 0], ["구석기 시대에 주로 사용한 도구는?", ["뗀석기", "스마트폰", "금속 활자"], 0], ["이동한 가장 큰 이유는?", ["먹을 것을 찾아서", "학교에 가려고", "기차를 타려고"], 0]]}, {"m": 2, "title": "신석기 시대", "keywords": "농경 · 정착 · 움집", "story": "신석기 시대에는 사람들이 농사를 짓기 시작하면서 큰 변화가 생겼어요. 씨앗을 심어 곡식을 거두려면 같은 장소에서 오랫동안 돌봐야 했기 때문에 한곳에 머물러 사는 정착 생활이 늘었습니다. 강이나 바다 가까이에 움집을 짓고 마을을 이루기도 했어요. 갈아 만든 간석기와 빗살무늬 토기를 사용했습니다. 농사는 먹을거리뿐 아니라 집, 마을, 생활 방식까지 바꾸었습니다.", "words": [["농경", "農耕", "땅을 일구어 농작물을 기르는 일"], ["정착", "定着", "한곳에 자리를 잡고 생활함"], ["움집", "움집", "땅을 파고 그 위에 지붕을 덮어 만든 집"]], "video": ["역사가 술술", "‘신석기’ 또는 ‘농경의 시작’ 관련 편 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10202560"], "book": ["용선생 처음 한국사 1", "선사 시대 중 신석기와 농경 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["농사를 짓기 시작하면 왜 한곳에 살아야 할까?", "마을이 생기면 혼자 살 때와 무엇이 달라질까?"], "takeaway": "농경의 시작은 이동 생활을 줄이고 정착과 마을 형성을 늘렸다.", "quiz": [["신석기 시대의 큰 변화는?", ["농경 시작", "인터넷 발명", "자동차 사용"], 0], ["한곳에 자리 잡고 사는 것은?", ["정착", "침략", "개항"], 0], ["신석기 시대의 대표 토기는?", ["빗살무늬 토기", "청자", "백자"], 0]]}, {"m": 2, "title": "청동기와 고조선", "keywords": "계급 · 지배 · 건국", "story": "농사가 발달하면서 곡식과 재산을 많이 가진 사람과 그렇지 못한 사람의 차이가 커졌어요. 청동으로 만든 무기와 도구는 귀했고, 힘 있는 지배자가 나타났습니다. 여러 마을과 집단이 합쳐지면서 점차 나라의 모습도 갖추게 되었어요. 우리 역사에서 처음 등장하는 국가로 배우는 고조선도 이런 변화 속에서 성장했습니다. 고조선의 법 조항을 보면 사회의 질서를 지키기 위한 규칙이 있었다는 것도 알 수 있어요.", "words": [["계급", "階級", "사회에서 지위나 역할에 따라 나뉜 집단"], ["지배", "支配", "힘이나 권한으로 다른 사람이나 지역을 다스림"], ["건국", "建國", "나라를 세움"]], "video": ["역사가 술술", "‘고조선’ 또는 ‘단군’ 관련 편 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10202560"], "book": ["용선생 처음 한국사 1", "청동기 시대와 고조선 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["재산 차이가 커지면 사회는 어떻게 달라질까?", "나라에는 왜 법과 규칙이 필요할까?"], "takeaway": "청동기 시대에는 계급과 지배자가 나타나고 국가가 성장하기 시작했다.", "quiz": [["우리 역사에서 첫 국가로 배우는 나라는?", ["고조선", "조선", "고려"], 0], ["청동기 시대에 나타난 변화는?", ["계급 발생", "모두 같은 재산", "국가가 사라짐"], 0], ["법이 필요한 까닭으로 알맞은 것은?", ["사회의 질서를 지키기 위해", "글자를 어렵게 하려고", "농사를 못 짓게 하려고"], 0]]}, {"m": 2, "title": "고구려·백제·신라", "keywords": "삼국 · 영토 · 경쟁", "story": "고구려, 백제, 신라는 서로 다른 지역에서 성장했습니다. 고구려는 북쪽의 넓은 지역을 바탕으로 힘을 키웠고, 백제는 한강 유역과 서해를 통한 교류에 유리했습니다. 신라는 한반도 동남쪽에서 성장했어요. 세 나라는 좋은 땅과 교통로를 차지하기 위해 경쟁하면서도 필요할 때는 다른 나라와 손을 잡기도 했습니다. 지도를 보며 세 나라의 위치를 비교하면 삼국의 관계가 훨씬 잘 이해됩니다.", "words": [["삼국", "三國", "고구려·백제·신라 세 나라"], ["영토", "領土", "나라가 다스리는 땅"], ["경쟁", "競爭", "서로 더 좋은 결과를 얻으려고 겨룸"]], "video": ["역사가 술술", "‘고구려·백제·신라’ 관련 편 중 하나 골라보기", "https://primary.ebs.co.kr/course/view?courseId=10202560"], "book": ["용선생 처음 한국사 1", "삼국의 위치와 성장 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["세 나라가 한강 주변을 중요하게 생각한 이유는 무엇일까?", "서로 경쟁하면서도 동맹을 맺는 이유는 무엇일까?"], "takeaway": "삼국은 서로 다른 지역에서 성장하며 영토와 중요한 지역을 두고 경쟁했다.", "quiz": [["삼국에 속하지 않는 나라는?", ["고구려", "백제", "고려"], 2], ["신라가 처음 성장한 지역은?", ["한반도 동남쪽", "중국 서쪽", "제주도만"], 0], ["세 나라가 경쟁한 중요한 이유는?", ["영토와 교통로", "휴대전화", "축구 경기"], 0]]}, {"m": 3, "title": "삼국의 성장", "keywords": "정복 · 교류 · 문화", "story": "삼국은 왕의 힘을 키우고 주변 지역을 정복하며 나라를 넓혔습니다. 특히 한강 유역은 농사에 유리하고 사람과 물자가 오가기 쉬워 세 나라가 번갈아 차지하려 했어요. 하지만 삼국은 싸우기만 한 것이 아닙니다. 중국, 일본 등 주변 지역과 사람과 물건, 기술과 문화를 주고받았습니다. 역사는 전쟁과 경쟁뿐 아니라 교류를 통해서도 크게 바뀝니다.", "words": [["정복", "征服", "다른 지역이나 나라를 힘으로 굴복시켜 차지함"], ["교류", "交流", "서로 오가며 문화·물건·생각 등을 주고받음"], ["문화", "文化", "사람들이 만들어 온 생활 방식과 생각, 예술 등"]], "video": ["역사가 술술", "‘광개토대왕’·‘근초고왕’·‘진흥왕’ 중 하나 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10202560"], "book": ["용선생 처음 한국사 1", "삼국의 전성기와 한강 유역 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["한강을 차지하면 어떤 점이 좋았을까?", "나라끼리 교류하면 무엇을 새로 배울 수 있을까?"], "takeaway": "삼국은 정복으로 영토를 넓히고 교류를 통해 문화를 발전시켰다.", "quiz": [["한강 유역이 중요했던 이유는?", ["농사와 교통에 유리해서", "눈이 항상 와서", "사람이 전혀 없어서"], 0], ["서로 문물과 생각을 주고받는 것은?", ["교류", "채집", "국경"], 0], ["다른 지역을 힘으로 차지하는 것은?", ["정복", "정착", "개항"], 0]]}, {"m": 3, "title": "삼국 통일 과정", "keywords": "동맹 · 전쟁 · 통일", "story": "삼국 시대 후반에는 고구려·백제·신라의 경쟁이 더욱 치열해졌습니다. 신라는 당과 동맹을 맺어 백제와 고구려를 무너뜨렸지만, 이후 당이 한반도까지 지배하려 하자 다시 당과 싸웠어요. 결국 신라는 한반도 남쪽의 많은 지역을 차지했습니다. 이 과정은 단순히 ‘신라가 이겼다’로 끝나지 않아요. 동맹을 맺은 이유와 다시 싸우게 된 이유를 생각하면 나라들의 선택을 더 잘 이해할 수 있습니다.", "words": [["동맹", "同盟", "공통의 목적을 위해 서로 힘을 합치기로 약속함"], ["전쟁", "戰爭", "나라나 집단 사이에 무력을 사용하는 큰 싸움"], ["통일", "統一", "나뉘어 있던 것을 하나로 합침"]], "video": ["초등 스토리 한국사(1)", "강좌에서 ‘삼국 통일’ 관련 강의 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10016271"], "book": ["용선생 처음 한국사 1", "신라의 삼국 통일 과정 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["신라는 왜 당과 손을 잡았을까?", "처음에 친구였던 나라와 다시 싸울 수도 있는 이유는?"], "takeaway": "삼국 통일 과정에는 전쟁뿐 아니라 나라 사이의 동맹과 이해관계가 있었다.", "quiz": [["신라가 처음 동맹을 맺은 나라는?", ["당", "미국", "고조선"], 0], ["공통 목적을 위해 힘을 합치는 것은?", ["동맹", "채집", "정착"], 0], ["삼국 통일을 이해할 때 중요한 것은?", ["나라들의 선택 이유", "연도만 외우기", "왕 이름 글자 수"], 0]]}, {"m": 3, "title": "통일신라와 발해", "keywords": "남북국 · 발해 · 계승", "story": "신라가 삼국을 통일한 뒤 한반도 남쪽에는 통일신라가 자리했고, 북쪽에서는 고구려 유민과 말갈 사람들이 힘을 모아 발해를 세웠습니다. 그래서 이 시기를 통일신라 하나만 있었던 시대로 보지 않고 ‘남북국 시대’라고 부르기도 해요. 발해는 고구려의 옛 땅 일부를 차지하고 고구려 문화를 이어받은 모습도 보였습니다. 한 시대에 한 나라만 존재한다는 생각에서 벗어나 지도를 넓게 보는 것이 중요합니다.", "words": [["남북국", "南北國", "남쪽의 신라와 북쪽의 발해가 함께 존재한 시대를 가리키는 말"], ["발해", "渤海", "고구려 유민 등이 세운 나라"], ["계승", "繼承", "앞선 사람이나 나라의 전통·문화 등을 이어받음"]], "video": ["초등 스토리 한국사(1)", "강좌에서 ‘통일신라와 발해’ 관련 강의 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10016271"], "book": ["용선생 처음 한국사 1", "통일신라와 발해 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["왜 ‘남북국 시대’라는 표현을 쓰기도 할까?", "발해가 고구려를 계승했다고 보는 근거에는 무엇이 있을까?"], "takeaway": "통일신라와 발해는 같은 시기에 남과 북에서 함께 존재했다.", "quiz": [["통일신라와 같은 시기 북쪽에 있던 나라는?", ["발해", "조선", "대한민국"], 0], ["앞선 전통을 이어받는 것은?", ["계승", "침략", "개항"], 0], ["남북국 시대의 두 나라는?", ["신라와 발해", "고려와 조선", "백제와 조선"], 0]]}, {"m": 3, "title": "고려의 건국", "keywords": "후삼국 · 왕건 · 고려", "story": "통일신라 말에는 왕의 힘이 약해지고 지방의 세력이 커지면서 나라가 혼란스러워졌습니다. 후백제와 후고구려가 등장해 여러 세력이 경쟁했고, 이를 후삼국 시대라고 해요. 왕건은 사람들의 지지를 얻고 다른 세력을 포용하면서 고려를 세웠고, 결국 후삼국을 통일했습니다. 새 나라를 오래 유지하려면 전쟁에서 이기는 것뿐 아니라 여러 사람을 자기 편으로 만들고 안정된 질서를 세우는 것이 중요했습니다.", "words": [["후삼국", "後三國", "통일신라 말 후백제·후고구려·신라가 경쟁하던 시기"], ["왕건", "王建", "고려를 세운 인물"], ["고려", "高麗", "왕건이 세운 왕조"]], "video": ["초등 스토리 한국사(1)", "강좌에서 ‘왕건’ 또는 ‘고려 건국’ 관련 강의 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10016271"], "book": ["용선생 처음 한국사 1", "후삼국과 고려의 건국 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["왕건은 왜 다른 세력의 사람들도 자기편으로 만들려고 했을까?", "전쟁에서 이긴 뒤 나라를 안정시키려면 무엇이 필요할까?"], "takeaway": "왕건은 고려를 세우고 여러 세력을 포용해 후삼국을 통일했다.", "quiz": [["고려를 세운 인물은?", ["왕건", "세종", "이순신"], 0], ["통일신라 말 여러 나라가 경쟁한 시기는?", ["후삼국", "일제강점기", "광복"], 0], ["왕건이 나라를 안정시키는 데 사용한 방법은?", ["여러 세력을 포용함", "모든 사람을 쫓아냄", "농사를 금지함"], 0]]}, {"m": 4, "title": "고려 사람들의 생활", "keywords": "귀족 · 백성 · 불교", "story": "고려에서는 왕과 귀족이 정치의 중심에 있었고, 대부분의 백성은 농사를 지으며 생활했습니다. 사람들의 신분과 직업에 따라 사는 모습에도 차이가 있었어요. 불교는 고려 사회에서 매우 큰 영향을 주어 절과 불상, 여러 행사가 발달했습니다. 그러나 역사에서는 왕이나 귀족뿐 아니라 평범한 백성이 어떻게 먹고 일하고 세금을 냈는지도 중요합니다. 사람들의 실제 생활을 보면 당시 사회가 더 생생하게 보입니다.", "words": [["귀족", "貴族", "높은 신분과 특권을 가진 사람들"], ["백성", "百姓", "나라를 이루며 살아가는 일반 사람들"], ["불교", "佛敎", "부처의 가르침을 따르는 종교"]], "video": ["초등 스토리 한국사(1)", "‘고려 사회’·‘고려 문화’ 관련 강의 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10016271"], "book": ["용선생 처음 한국사 1", "고려의 사회와 문화 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["왕과 귀족의 생활과 농민의 생활은 어떻게 달랐을까?", "종교가 건축과 예술에 영향을 줄 수 있는 이유는?"], "takeaway": "고려 사회는 신분에 따라 생활이 달랐고 불교 문화가 크게 발달했다.", "quiz": [["고려에서 크게 발달한 종교 문화는?", ["불교", "로마 신화", "마야 문명"], 0], ["나라의 일반 사람들을 가리키는 말은?", ["백성", "수도", "국경"], 0], ["고려 생활을 이해할 때 살펴볼 것은?", ["귀족과 백성 모두의 생활", "왕의 이름만", "전쟁만"], 0]]}, {"m": 4, "title": "고려와 외침", "keywords": "외침 · 항쟁 · 몽골", "story": "고려는 오랜 기간 여러 외부 세력의 침입을 받았습니다. 거란, 여진과 맞섰고 특히 몽골의 침입은 오랫동안 이어졌어요. 고려 조정은 강화도로 수도를 옮겨 버티기도 했고, 백성들은 곳곳에서 큰 피해를 입으면서도 저항했습니다. 팔만대장경처럼 나라의 어려움을 극복하려는 마음에서 만들어진 문화유산도 있습니다. 전쟁을 공부할 때는 누가 이겼는지만 보지 말고 평범한 사람들의 피해와 변화도 살펴봐야 합니다.", "words": [["외침", "外侵", "다른 나라나 세력이 밖에서 쳐들어옴"], ["항쟁", "抗爭", "억압이나 침략에 맞서 싸움"], ["몽골", "蒙古", "고려를 여러 차례 침입한 당시의 강대 세력"]], "video": ["초등 스토리 한국사(1)", "‘몽골의 침입’ 관련 강의 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10016271"], "book": ["용선생 처음 한국사 1", "고려와 몽골의 전쟁 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["수도를 섬인 강화도로 옮기면 어떤 장점이 있었을까?", "전쟁은 왕보다 평범한 백성에게 어떤 영향을 줄까?"], "takeaway": "고려는 여러 외침에 맞섰고, 전쟁은 백성의 삶에도 큰 피해와 변화를 남겼다.", "quiz": [["고려를 여러 차례 침입한 세력은?", ["몽골", "로마", "아즈텍"], 0], ["침략에 맞서 싸우는 것은?", ["항쟁", "정착", "교류"], 0], ["고려가 몽골에 맞서 수도를 옮긴 곳은?", ["강화도", "제주도", "울릉도"], 0]]}, {"m": 4, "title": "고려에서 조선으로", "keywords": "개혁 · 왕조 · 조선", "story": "고려 말에는 권력을 가진 사람들의 토지 문제, 정치의 혼란, 외부의 위협 등 여러 문제가 쌓였습니다. 사회를 고치려는 개혁의 움직임이 나타났고, 결국 이성계를 중심으로 새로운 나라 조선이 세워졌어요. 하지만 왕조가 바뀌었다고 다음 날 모든 사람의 생활이 한순간에 달라진 것은 아닙니다. 옛 제도 중 이어진 것도 있고 새롭게 바뀐 것도 있었어요. ‘왜 고려가 끝났고 왜 새 나라가 필요했을까?’를 생각하는 것이 핵심입니다.", "words": [["개혁", "改革", "제도나 사회의 잘못된 점을 고쳐 새롭게 함"], ["왕조", "王朝", "같은 왕가가 이어 나라를 다스리는 체제"], ["조선", "朝鮮", "고려 뒤에 세워진 왕조"]], "video": ["초등 스토리 한국사(1)", "‘고려 말’·‘조선 건국’ 관련 강의 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10016271"], "book": ["용선생 처음 한국사 1", "고려 말의 변화와 조선 건국 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["사람들은 왜 기존 제도를 고치려고 했을까?", "나라가 바뀌어도 계속 이어지는 것은 무엇이 있을까?"], "takeaway": "고려 말의 여러 문제와 개혁 움직임 속에서 조선이 세워졌다.", "quiz": [["제도나 사회를 고쳐 새롭게 하는 것은?", ["개혁", "채집", "정착"], 0], ["고려 뒤에 세워진 왕조는?", ["조선", "백제", "발해"], 0], ["조선을 세우는 데 중심이 된 인물은?", ["이성계", "왕건", "장보고"], 0]]}, {"m": 4, "title": "세종과 훈민정음", "keywords": "백성 · 훈민정음 · 창제", "story": "조선 시대에는 한자를 사용했지만, 한자를 배우기 어려운 백성들은 자기 생각을 글로 적기 쉽지 않았습니다. 세종은 사람들이 쉽게 배우고 사용할 수 있는 새로운 글자를 만들도록 했고, 이것이 훈민정음입니다. ‘훈민정음’은 백성을 가르치는 바른 소리라는 뜻을 담고 있어요. 새 글자가 생기자 더 많은 사람이 자신의 말을 글로 표현할 길이 열렸습니다. 문자와 지식이 누구에게나 가까워지는 일이 사회를 어떻게 바꾸는지 생각해 볼 수 있어요.", "words": [["훈민정음", "訓民正音", "‘백성을 가르치는 바른 소리’라는 뜻의 새 문자"], ["창제", "創製", "전에 없던 것을 처음 만들어 냄"], ["백성", "百姓", "나라를 이루어 살아가는 일반 사람들"]], "video": ["초등 스토리 한국사(1)", "‘세종’·‘훈민정음’ 관련 강의 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10016271"], "book": ["용선생 처음 한국사 1", "세종과 훈민정음 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["세종은 왜 새로운 문자가 필요하다고 생각했을까?", "글을 쉽게 읽고 쓸 수 있게 되면 사람들에게 어떤 변화가 생길까?"], "takeaway": "세종은 백성이 쉽게 배우고 쓸 수 있도록 훈민정음을 창제했다.", "quiz": [["훈민정음을 만든 왕은?", ["세종", "왕건", "광개토대왕"], 0], ["‘창제’의 뜻은?", ["새로운 것을 처음 만듦", "밖에서 쳐들어옴", "나라를 옮김"], 0], ["훈민정음이 필요했던 중요한 이유는?", ["백성이 글을 쉽게 쓰도록", "전쟁을 늘리려고", "농사를 없애려고"], 0]]}, {"m": 5, "title": "조선 사람들의 생활", "keywords": "양반 · 상민 · 신분", "story": "조선 사회에서는 사람의 신분에 따라 할 수 있는 일과 생활 모습에 차이가 있었습니다. 양반은 주로 관직에 나아가거나 학문을 했고, 많은 상민은 농업·수공업·상업 등에 종사했습니다. 천민 신분의 사람들도 있었어요. 하지만 실제 사회는 교과서의 몇 칸처럼 단순하지 않았고 시간이 흐르면서 신분 질서에도 변화가 생겼습니다. 역사 속 제도를 볼 때는 ‘그 제도가 사람들에게 공평했을까?’를 생각해 보는 것도 중요합니다.", "words": [["양반", "兩班", "조선 사회의 지배 신분층"], ["상민", "常民", "조선 시대 일반 백성의 다수를 이루던 신분"], ["신분", "身分", "사회에서 개인이 차지하는 지위"]], "video": ["초등 스토리 한국사(1)", "‘조선의 사회와 생활’ 관련 강의 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10016271"], "book": ["용선생 처음 한국사 1", "조선의 신분과 백성 생활 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["태어날 때 정해진 신분 때문에 할 수 있는 일이 달라지면 공평할까?", "조선 시대 농민의 하루는 어땠을까?"], "takeaway": "조선은 신분에 따라 역할과 생활에 차이가 큰 사회였다.", "quiz": [["조선의 지배 신분층은?", ["양반", "구석기인", "몽골"], 0], ["사회에서 개인의 지위를 뜻하는 말은?", ["신분", "영토", "개항"], 0], ["조선의 많은 상민이 하던 일은?", ["농업 등 생업", "우주 비행", "자동차 제작"], 0]]}, {"m": 5, "title": "임진왜란", "keywords": "침략 · 의병 · 전쟁", "story": "1592년 일본군이 조선을 침략하면서 임진왜란이 시작되었습니다. 갑작스러운 전쟁으로 많은 지역과 사람들이 큰 피해를 입었어요. 조선 수군은 이순신을 중심으로 바다에서 일본군의 이동과 보급을 막았고, 각 지역에서는 평범한 백성과 유생 등이 의병을 조직해 싸웠습니다. 명의 군대도 조선을 도왔어요. 임진왜란은 유명한 장군 한 사람의 이야기만이 아니라 수많은 사람의 삶이 흔들린 큰 전쟁이었습니다.", "words": [["침략", "侵略", "다른 나라에 쳐들어가 땅이나 권리를 빼앗으려 함"], ["의병", "義兵", "나라가 위기에 처했을 때 스스로 일어나 싸운 백성의 군대"], ["전쟁", "戰爭", "나라나 집단 사이의 큰 무력 충돌"]], "video": ["역사가 술술", "‘이순신’ 또는 ‘임진왜란’ 관련 편 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10202560"], "book": ["용선생 처음 한국사 1", "임진왜란과 이순신·의병 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["바다의 보급로를 막는 것이 전쟁에서 왜 중요할까?", "평범한 사람들이 의병으로 나선 이유는 무엇일까?"], "takeaway": "임진왜란 때 조선 수군과 의병 등 많은 사람이 침략에 맞서 싸웠다.", "quiz": [["임진왜란 때 조선 수군을 이끈 대표 인물은?", ["이순신", "왕건", "장영실"], 0], ["스스로 조직해 싸운 백성의 군대는?", ["의병", "왕조", "국경"], 0], ["임진왜란을 일으킨 침략 세력은?", ["일본군", "고조선", "발해"], 0]]}, {"m": 5, "title": "조선 후기의 변화", "keywords": "상업 · 시장 · 변화", "story": "조선 후기로 가면서 농업 생산이 늘고 상품을 사고파는 일이 활발해졌습니다. 장시라고 불린 시장이 성장하고, 돈을 사용한 거래도 늘었어요. 일부 농민은 많은 농사를 지어 부자가 되기도 했고, 상업으로 재산을 모은 사람도 생겼습니다. 사회와 경제가 변하면서 신분 질서도 예전처럼 단단하게 유지되기 어려워졌어요. 경제의 변화가 사람들의 생각과 사회 구조까지 바꿀 수 있다는 좋은 사례입니다.", "words": [["상업", "商業", "물건을 사고팔아 이익을 얻는 활동"], ["시장", "市場", "물건이나 서비스를 사고파는 곳"], ["변화", "變化", "이전과 다른 모습으로 달라짐"]], "video": ["초등 스토리 한국사(2)", "‘조선 후기 경제·사회 변화’ 관련 강의 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10016272"], "book": ["용선생 처음 한국사 2", "조선 후기 경제와 사회 변화 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["시장이 커지면 사람들의 생활은 어떻게 달라질까?", "돈을 많이 번 상인이 늘어나면 신분제에는 어떤 변화가 생길까?"], "takeaway": "조선 후기에는 상업과 시장이 성장하면서 사회와 신분 질서도 변화했다.", "quiz": [["물건을 사고파는 활동은?", ["상업", "항쟁", "창제"], 0], ["조선 후기의 변화로 알맞은 것은?", ["시장 성장", "농업 완전 소멸", "사람들이 거래를 하지 않음"], 0], ["경제 변화는 무엇에도 영향을 줄 수 있을까?", ["사회 구조", "달의 크기", "지구의 자전"], 0]]}, {"m": 5, "title": "개항과 외국 문물", "keywords": "개항 · 조약 · 교류", "story": "19세기 조선은 서양 여러 나라와 일본이 동아시아로 세력을 넓히는 상황과 마주했습니다. 조선은 오랫동안 외국과의 교류를 제한했지만 결국 일본과 강화도 조약을 맺으며 항구를 열게 되었어요. 이를 개항이라고 합니다. 이후 새로운 기술과 물건, 제도가 들어왔지만 외국의 압력과 불평등한 관계 때문에 갈등도 커졌습니다. 새로운 문물을 받아들이는 문제와 나라의 주권을 지키는 문제가 함께 얽혀 있었어요.", "words": [["개항", "開港", "외국과 무역·교류할 수 있도록 항구를 엶"], ["조약", "條約", "나라와 나라 사이에 맺는 공식적인 약속"], ["교류", "交流", "사람·물건·문화·생각 등을 서로 주고받음"]], "video": ["초등 스토리 한국사(2)", "‘개항’·‘강화도 조약’ 관련 강의 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10016272"], "book": ["용선생 처음 한국사 2", "개항과 근대 문물 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["외국 문물을 받아들이면 좋은 점과 어려운 점은 무엇일까?", "나라 사이의 조약이 공평해야 하는 이유는?"], "takeaway": "개항으로 외국과의 교류가 커졌지만 외세의 압력과 주권 문제도 함께 커졌다.", "quiz": [["외국과 교류하도록 항구를 여는 것은?", ["개항", "정착", "채집"], 0], ["나라와 나라 사이의 공식 약속은?", ["조약", "왕조", "신분"], 0], ["조선이 일본과 맺은 대표적인 개항 조약은?", ["강화도 조약", "훈민정음", "팔만대장경"], 0]]}, {"m": 6, "title": "일제강점기", "keywords": "식민지 · 항일 · 독립", "story": "1910년 일본은 대한제국의 주권을 빼앗고 우리나라를 식민지로 지배했습니다. 일제강점기에는 정치 활동이 억압되고 토지와 자원, 교육과 문화 등 여러 분야에서 일본의 지배가 이루어졌어요. 우리말과 이름을 지키는 일조차 어려워진 시기도 있었습니다. 하지만 사람들은 국내외에서 독립을 되찾기 위해 다양한 방법으로 저항했습니다. 이 시기는 ‘나라의 주권을 잃는다는 것이 사람들의 삶에 어떤 의미인지’를 생각하며 배우는 것이 중요합니다.", "words": [["식민지", "植民地", "다른 나라의 정치·경제적 지배를 받는 지역이나 나라"], ["항일", "抗日", "일본의 침략과 지배에 맞섬"], ["독립", "獨立", "다른 나라의 지배를 받지 않고 스스로 나라를 다스림"]], "video": ["초등 스토리 한국사(2)", "‘일제강점기’ 관련 강의 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10016272"], "book": ["용선생 처음 한국사 2", "일제강점기 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["나라의 주권을 빼앗기면 평범한 사람들의 삶은 어떻게 달라질까?", "말과 이름, 문화를 지키는 것도 왜 독립운동이 될 수 있을까?"], "takeaway": "일제강점기에는 일본의 식민 지배에 맞서 많은 사람이 독립을 위해 노력했다.", "quiz": [["다른 나라의 지배를 받는 상태와 관련된 말은?", ["식민지", "수도", "시장"], 0], ["일본의 지배에 맞서는 것은?", ["항일", "정착", "농경"], 0], ["독립의 뜻은?", ["스스로 나라를 다스림", "다른 나라의 지배를 받음", "나라가 없어짐"], 0]]}, {"m": 6, "title": "독립운동", "keywords": "의병 · 3·1운동 · 임시정부", "story": "독립운동은 한 가지 방법으로만 이루어진 것이 아니었습니다. 일본의 침략에 무장으로 맞선 의병이 있었고, 1919년에는 수많은 사람이 거리에서 ‘대한 독립 만세’를 외친 3·1운동이 일어났어요. 이후 대한민국 임시정부가 세워졌고, 독립군의 무장 투쟁, 교육과 문화 운동, 외교 활동 등 다양한 노력이 이어졌습니다. 서로 방법은 달랐지만 ‘나라의 주권을 되찾겠다’는 목표는 같았습니다.", "words": [["의병", "義兵", "나라가 위기에 처했을 때 스스로 일어나 싸운 사람들의 군대"], ["3·1운동", "三一運動", "1919년 전국적으로 펼쳐진 독립 만세 운동"], ["임시정부", "臨時政府", "정식 정부가 세워지기 전 임시로 조직한 정부"]], "video": ["초등 스토리 한국사(2)", "‘3·1운동’·‘대한민국 임시정부’ 관련 강의 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10016272"], "book": ["용선생 처음 한국사 2", "3·1운동과 독립운동 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["독립운동 방법이 여러 가지였던 이유는 무엇일까?", "많은 사람이 함께 만세를 외친 행동에는 어떤 힘이 있었을까?"], "takeaway": "독립을 위해 무장 투쟁, 만세 운동, 외교·교육 등 다양한 방법이 사용되었다.", "quiz": [["3·1운동이 일어난 해는?", ["1919년", "1592년", "2026년"], 0], ["3·1운동 뒤 세워진 대표적인 조직은?", ["대한민국 임시정부", "고조선", "후백제"], 0], ["독립운동의 공통 목표는?", ["나라의 주권 회복", "식민 지배 확대", "신분제 강화"], 0]]}, {"m": 6, "title": "광복과 대한민국", "keywords": "광복 · 분단 · 대한민국", "story": "1945년 일본이 제2차 세계대전에서 패하면서 우리나라는 식민 지배에서 벗어나 광복을 맞았습니다. 하지만 곧 한반도는 남과 북으로 나뉘었고, 1948년 남한에는 대한민국 정부가 수립되었습니다. 1950년에는 한국 전쟁이 일어나 수많은 사람이 희생되고 삶의 터전을 잃었어요. 광복 이후의 역사는 ‘독립을 되찾으면 모든 문제가 바로 끝난다’는 단순한 이야기가 아니라 분단과 전쟁, 새로운 국가 건설이라는 어려운 과정을 함께 보여줍니다.", "words": [["광복", "光復", "빼앗긴 나라의 주권을 되찾음. ‘빛을 다시 찾는다’는 뜻"], ["분단", "分斷", "하나였던 지역이나 나라가 둘 이상으로 나뉨"], ["대한민국", "大韓民國", "현재 우리나라의 공식 국호"]], "video": ["초등 스토리 한국사(2)", "‘광복’·‘대한민국 정부 수립’·‘한국 전쟁’ 관련 강의 찾아보기", "https://primary.ebs.co.kr/course/view?courseId=10016272"], "book": ["용선생 처음 한국사 2", "광복·분단·대한민국 정부 수립 부분", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["광복을 했는데 왜 곧바로 평화로운 하나의 나라가 되지 못했을까?", "전쟁은 가족과 평범한 사람들의 삶에 어떤 상처를 남길까?"], "takeaway": "광복 뒤 대한민국이 세워졌지만 분단과 한국 전쟁이라는 큰 어려움을 겪었다.", "quiz": [["우리나라가 광복을 맞은 해는?", ["1945년", "1919년", "1592년"], 0], ["하나의 지역이 나뉘는 것은?", ["분단", "교류", "정착"], 0], ["한국 전쟁이 시작된 해는?", ["1950년", "1392년", "918년"], 0]]}, {"m": 6, "title": "한국사 전체 연결", "keywords": "시대 · 왕조 · 변화", "story": "이제 한국사를 하나의 긴 이야기로 연결해 볼 차례예요. 선사 시대 사람들이 농사를 짓고 마을을 만들면서 국가가 생겨났고, 고조선 뒤 여러 나라가 성장했습니다. 삼국과 통일신라·발해를 지나 고려와 조선이 이어졌고, 개항 뒤에는 외세의 침략과 일제강점기를 겪었습니다. 독립운동과 광복을 거쳐 대한민국이 세워졌어요. 모든 세부 내용을 외울 필요는 없습니다. 큰 길을 알고 있으면 학교에서 새로운 인물과 사건을 배울 때 ‘이 길의 여기쯤이구나!’ 하고 자리를 잡을 수 있어요.", "words": [["시대", "時代", "공통된 특징을 가진 일정한 시간의 구간"], ["왕조", "王朝", "왕의 집안이 이어 나라를 다스리는 체제"], ["변화", "變化", "이전과 다른 모습으로 달라짐"]], "video": ["역사가 술술", "지금까지 가장 재미있었던 시대의 편을 하나 골라 다시 보기", "https://primary.ebs.co.kr/course/view?courseId=10202560"], "book": ["용선생 처음 한국사 1·2", "목차만 보며 선사→삼국→고려→조선→근현대 순서 말하기", "https://www.yongclass.com/book/learning-materials/010102/4"], "questions": ["한국사의 큰 순서를 내 말로 1분 안에 말해볼까?", "가장 더 알고 싶은 시대는 언제이고 왜 그럴까?"], "takeaway": "큰 시대 흐름을 알면 새 사건을 배울 때 역사 속 위치를 쉽게 찾을 수 있다.", "quiz": [["올바른 큰 흐름은?", ["삼국→고려→조선", "조선→구석기→삼국", "대한민국→고조선→고려"], 0], ["고려 다음 왕조는?", ["조선", "신라", "고조선"], 0], ["한국사 준비에서 가장 중요한 목표는?", ["큰 흐름과 원인·결과 이해", "모든 연도 외우기", "왕 이름만 외우기"], 0]]}];
+const STORAGE_KEY = "heeyoon-history-board-v2";
+function blankState(){return {weeks:{},activities:{},quiz:{}}}
+function loadState(){try{const p=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");return p?{weeks:p.weeks||{},activities:p.activities||{},quiz:p.quiz||{}}:blankState()}catch(e){return blankState()}}
+let state=loadState();
+const weeksEl=document.getElementById("weeks");
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));updateStats()}
+function render(){
+ weeksEl.innerHTML="";
+ curriculum.forEach((w,idx)=>{
+  const n=idx+1, card=document.createElement("article"); card.className="week"+(state.weeks[n]?" done":""); card.dataset.month=w.m;
+  const vocab=w.words.map(x=>`<div class="vocab"><strong>${esc(x[0])}</strong><span class="hanja">${esc(x[1])}</span><br>${esc(x[2])}</div>`).join("");
+  const parents=w.questions.map((q,i)=>`<div class="parent-q">${i+1}. ${esc(q)}</div>`).join("");
+  const quizzes=w.quiz.map((q,qi)=>{const key=`${n}-${qi}`,chosen=state.quiz[key];const opts=q[1].map((o,oi)=>{let cls="opt";if(chosen!==undefined)cls+=oi===q[2]?" correct":(oi===chosen?" wrong":"");return `<button type="button" class="${cls}" data-week="${n}" data-qi="${qi}" data-oi="${oi}">${oi+1}. ${esc(o)}</button>`}).join("");let fb="";if(chosen!==undefined)fb=chosen===q[2]?"정답이에요 ✓":"괜찮아요. 초록색 답을 다시 읽어봐요.";return `<div class="quiz-item"><div class="quiz-q">${qi+1}. ${esc(q[0])}</div><div class="opts">${opts}</div><div class="feedback">${fb}</div></div>`}).join("");
+  card.innerHTML=`
+   <div class="top"><button type="button" class="title-button" aria-expanded="false"><div class="week-no">${w.m}개월차 · ${n}주</div><div class="title-line"><h3>${esc(w.title)}</h3><span class="chev">▼</span></div></button><input class="check week-check" type="checkbox" ${state.weeks[n]?"checked":""} aria-label="${n}주 완료"></div>
+   <div class="words"><b>핵심어휘</b> · ${esc(w.keywords)}</div><div class="question">💬 ${esc(w.questions[0])}</div>
+   <div class="mini">${["이야기","한자어","5분대화"].map((name,aidx)=>{const k=`${n}-${aidx}`;return `<label><input type="checkbox" class="activity-check" data-key="${k}" ${state.activities[k]?"checked":""}> ${name}</label>`}).join("")}</div>
+   <div class="open-hint">제목을 누르면 이번 주 학습이 펼쳐져요 ↓</div>
+   <div class="detail">
+    <div class="detail-section"><div class="detail-title">📖 오늘의 이야기 · 3~5분</div><div class="story">${esc(w.story)}</div></div>
+    <div class="detail-section"><div class="detail-title">🈶 오늘의 한자어 3개</div><div class="vocab-list">${vocab}</div></div>
+    <div class="detail-section"><div class="detail-title">📚 우리 집 책에서 찾아보기 · 선택</div><div class="resource"><div class="resource-name">${esc(w.book[0])}</div><div class="resource-desc">${esc(w.book[1])}<br>※ 쪽수 대신 주제로 안내합니다. 책을 안 읽는 날은 건너뛰어도 됩니다.</div><div class="resource-actions"><a href="${w.book[2]}" target="_blank" rel="noopener" class="secondary">용선생 활동지/자료 ↗</a></div></div></div>
+    <div class="detail-section"><div class="detail-title">🎬 같이 보면 좋은 EBS · 선택</div><div class="resource"><div class="resource-name">${esc(w.video[0])}</div><div class="resource-desc">${esc(w.video[1])}<br>※ 강좌 페이지의 ‘강의명 검색’에서 핵심어를 찾아 골라 보세요.</div><div class="resource-actions"><a href="${w.video[2]}" target="_blank" rel="noopener">EBS 강좌 열기 ↗</a></div></div></div>
+    <div class="detail-section"><div class="detail-title">💬 부모와 5분 대화</div>${parents}</div>
+    <div class="detail-section"><div class="detail-title">⭐ 오늘의 한 줄</div><div class="takeaway">${esc(w.takeaway)}</div></div>
+    <div class="detail-section"><div class="detail-title">🧩 초간단 3문제</div>${quizzes}</div>
+   </div>`;
+  const title=card.querySelector(".title-button");title.addEventListener("click",()=>{const open=card.classList.toggle("open");title.setAttribute("aria-expanded",String(open))});
+  const wc=card.querySelector(".week-check");wc.addEventListener("change",()=>{state.weeks[n]=wc.checked;card.classList.toggle("done",wc.checked);save()});
+  card.querySelectorAll(".activity-check").forEach(cb=>cb.addEventListener("change",()=>{state.activities[cb.dataset.key]=cb.checked;save()}));
+  card.querySelectorAll(".opt").forEach(btn=>btn.addEventListener("click",()=>{const key=`${btn.dataset.week}-${btn.dataset.qi}`;state.quiz[key]=Number(btn.dataset.oi);save();renderKeepFilter(Number(btn.dataset.week))}));
+  weeksEl.appendChild(card);
+ });
+}
+function currentFilter(){return document.querySelector(".filter.active")?.dataset.filter||"all"}
+function applyFilter(v){document.querySelectorAll(".week").forEach(c=>c.classList.toggle("hidden",!(v==="all"||c.dataset.month===v)))}
+function renderKeepFilter(openWeek){const f=currentFilter();render();applyFilter(f);if(openWeek){const card=[...document.querySelectorAll(".week")][openWeek-1];if(card&&!card.classList.contains("hidden")){card.classList.add("open");card.querySelector(".title-button")?.setAttribute("aria-expanded","true")}}}
+function updateStats(){const done=Object.values(state.weeks).filter(Boolean).length,acts=Object.values(state.activities).filter(Boolean).length,pct=Math.round(done/24*100);document.getElementById("doneCount").textContent=done;document.getElementById("todoCount").textContent=24-done;document.getElementById("studyCount").textContent=acts;document.getElementById("progressText").textContent=`${pct}% · ${done}/24주`;document.getElementById("progressBar").style.width=pct+"%"}
+document.querySelectorAll(".filter").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));b.classList.add("active");applyFilter(b.dataset.filter)}));
+document.getElementById("collapseBtn").addEventListener("click",()=>{document.querySelectorAll(".week.open").forEach(c=>{c.classList.remove("open");c.querySelector(".title-button")?.setAttribute("aria-expanded","false")})});
+document.getElementById("resetBtn").addEventListener("click",()=>{if(!confirm("24주 학습 기록과 퀴즈 기록을 모두 초기화할까요?"))return;state=blankState();save();renderKeepFilter()});
+render();updateStats();
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+</script>
 </body>
 </html>
