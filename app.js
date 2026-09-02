@@ -11,7 +11,8 @@
     version: DATA_VERSION,
     days: {},
     day2Choice: {},
-    quiz: {}
+    quiz: {},
+    visits: {}
   });
 
   function loadState() {
