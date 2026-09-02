@@ -23,7 +23,8 @@
         version: DATA_VERSION,
         days: parsed.days || {},
         day2Choice: parsed.day2Choice || {},
-        quiz: parsed.quiz || {}
+        quiz: parsed.quiz || {},
+        visits: parsed.visits || {}
       };
     } catch {
       return blankState();
@@ -281,6 +282,51 @@
               </div>
             </div>
           </section>
+
+          <section class="fieldtrip-panel ${state.visits[n] ? "visited" : ""}">
+            <div class="fieldtrip-head">
+              <div>
+                <div class="fieldtrip-kicker">WEEKEND BONUS · 현장탐방</div>
+                <div class="fieldtrip-title">${escapeHtml(week.fieldTrip.place)}</div>
+                <div class="fieldtrip-area">${escapeHtml(week.fieldTrip.area)} · 선택 활동 · 주간 진도에는 포함되지 않아요</div>
+              </div>
+              <div class="fieldtrip-status">${state.visits[n] ? "다녀옴 ✓" : "선택"}</div>
+            </div>
+
+            <div class="fieldtrip-why">${escapeHtml(week.fieldTrip.why)}</div>
+
+            <div class="fieldtrip-grid">
+              <div class="fieldtrip-card">
+                <b>🔎 현장 한자 미션</b>
+                <div>${escapeHtml(week.fieldTrip.hanja)}</div>
+              </div>
+              <div class="fieldtrip-card">
+                <b>🎯 찾아보기</b>
+                <div>${escapeHtml(week.fieldTrip.mission)}</div>
+              </div>
+            </div>
+
+            <div class="fieldtrip-question">💬 ${escapeHtml(week.fieldTrip.question)}</div>
+
+            <div class="fieldtrip-actions">
+              <a
+                class="map-link"
+                target="_blank"
+                rel="noopener"
+                href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(week.fieldTrip.place)}">
+                지도에서 찾기 ↗
+              </a>
+
+              <label class="visit-check-label">
+                <input
+                  type="checkbox"
+                  class="visit-check"
+                  data-week="${n}"
+                  ${state.visits[n] ? "checked" : ""}>
+                다녀왔어요
+              </label>
+            </div>
+          </section>
         </div>
       `;
 
@@ -318,6 +364,16 @@
           applyFilter(filter);
         });
       });
+
+      const visitCheck = card.querySelector(".visit-check");
+      if (visitCheck) {
+        visitCheck.addEventListener("change", () => {
+          state.visits[n] = visitCheck.checked;
+          save();
+          render();
+          applyFilter(filter);
+        });
+      }
 
       weeksEl.appendChild(card);
     });
