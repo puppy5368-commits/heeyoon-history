@@ -126,6 +126,91 @@
     }).join("");
   }
 
+  function refreshCard(card, weekNum) {
+    const day1 = isDayDone(weekNum, 1);
+    const day2 = isDayDone(weekNum, 2);
+    const day3 = isDayDone(weekNum, 3);
+    const count = weekDoneCount(weekNum);
+    const day2Choice = state.day2Choice[weekNum] || "";
+
+    // Update the week-level progress without rebuilding the card.
+    card.classList.toggle("done", count === 3);
+
+    const progress = card.querySelector(".week-progress span");
+    if (progress) progress.style.width = `${(count / 3) * 100}%`;
+
+    const status = card.querySelector(".week-status");
+    if (status) status.textContent = `${count}/3 DAY 완료`;
+
+    // Update each DAY panel's visual completion state.
+    [day1, day2, day3].forEach((done, index) => {
+      const day = index + 1;
+      const panel = card.querySelector(`.day-panel[data-day="${day}"]`);
+      if (!panel) return;
+
+      panel.classList.toggle("complete", done);
+      const badge = panel.querySelector(".day-complete");
+      if (badge) badge.textContent = done ? "완료 ✓" : "미완료";
+    });
+
+    // DAY 2 choice: only update selected styling in place.
+    card.querySelectorAll(".resource").forEach(resource => {
+      const radio = resource.querySelector(".day2-choice");
+      resource.classList.toggle(
+        "selected",
+        Boolean(radio && radio.value === day2Choice)
+      );
+    });
+
+    // Weekend visit status.
+    const visitPanel = card.querySelector(".fieldtrip-panel");
+    if (visitPanel) {
+      const visited = Boolean(state.visits[weekNum]);
+      visitPanel.classList.toggle("visited", visited);
+      const visitStatus = visitPanel.querySelector(".fieldtrip-status");
+      if (visitStatus) visitStatus.textContent = visited ? "다녀옴 ✓" : "선택";
+    }
+
+    updateGlobalStats();
+  }
+
+  function refreshQuizItem(card, weekNum, qIndex) {
+    const item = curriculum[weekNum - 1]?.quiz?.[qIndex];
+    if (!item) return;
+
+    const key = `${weekNum}-${qIndex}`;
+    const selected = state.quiz[key];
+    const correctIndex = item[2];
+
+    const quizItems = card.querySelectorAll(".quiz-item");
+    const quizItem = quizItems[qIndex];
+    if (!quizItem) return;
+
+    quizItem.querySelectorAll(".opt").forEach((button, optionIndex) => {
+      button.classList.remove("correct", "wrong");
+
+      if (selected !== undefined) {
+        if (optionIndex === correctIndex) {
+          button.classList.add("correct");
+        } else if (optionIndex === selected) {
+          button.classList.add("wrong");
+        }
+      }
+    });
+
+    const feedback = quizItem.querySelector(".feedback");
+    if (feedback) {
+      if (selected === undefined) {
+        feedback.textContent = "";
+      } else {
+        feedback.textContent =
+          selected === correctIndex
+            ? "정답이에요 ✓"
+            : "괜찮아요. 초록색 답을 다시 읽어봐요.";
+      }
+    }
+  }
+
   function render() {
     const filter = currentFilter();
     weeksEl.innerHTML = "";
@@ -174,7 +259,7 @@
         </div>
 
         <div class="detail">
-          <section class="day-panel ${day1 ? "complete" : ""}">
+          <section class="day-panel ${day1 ? "complete" : ""}" data-day="1">
             <div class="day-head">
               <div class="day-head-left">
                 <div class="day-kicker">DAY 1 · 만나기</div>
@@ -200,7 +285,7 @@
             </div>
           </section>
 
-          <section class="day-panel ${day2 ? "complete" : ""}">
+          <section class="day-panel ${day2 ? "complete" : ""}" data-day="2">
             <div class="day-head">
               <div class="day-head-left">
                 <div class="day-kicker">DAY 2 · 연결하기</div>
@@ -247,7 +332,7 @@
             </div>
           </section>
 
-          <section class="day-panel ${day3 ? "complete" : ""}">
+          <section class="day-panel ${day3 ? "complete" : ""}" data-day="3">
             <div class="day-head">
               <div class="day-head-left">
                 <div class="day-kicker">DAY 3 · 생각하기</div>
@@ -342,8 +427,7 @@
           const day = Number(cb.dataset.day);
           state.days[`${weekNum}-${day}`] = cb.checked;
           save();
-          render();
-          applyFilter(filter);
+          refreshCard(card, weekNum);
         });
       });
 
@@ -352,17 +436,19 @@
           const weekNum = Number(radio.dataset.week);
           state.day2Choice[weekNum] = radio.value;
           save();
-          render();
-          applyFilter(filter);
+          refreshCard(card, weekNum);
         });
       });
 
       card.querySelectorAll(".opt").forEach(btn => {
         btn.addEventListener("click", () => {
+          const [weekNumText, qIndexText] = btn.dataset.qkey.split("-");
+          const weekNum = Number(weekNumText);
+          const qIndex = Number(qIndexText);
+
           state.quiz[btn.dataset.qkey] = Number(btn.dataset.option);
           save();
-          render();
-          applyFilter(filter);
+          refreshQuizItem(card, weekNum, qIndex);
         });
       });
 
@@ -371,8 +457,7 @@
         visitCheck.addEventListener("change", () => {
           state.visits[n] = visitCheck.checked;
           save();
-          render();
-          applyFilter(filter);
+          refreshCard(card, n);
         });
       }
 
