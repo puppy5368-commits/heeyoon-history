@@ -153,13 +153,13 @@
       if (badge) badge.textContent = done ? "완료 ✓" : "미완료";
     });
 
-    // DAY 2 choice: only update selected styling in place.
+    // DAY 2 choice: update both radio state and selected styling in place.
     card.querySelectorAll(".resource").forEach(resource => {
       const radio = resource.querySelector(".day2-choice");
-      resource.classList.toggle(
-        "selected",
-        Boolean(radio && radio.value === day2Choice)
-      );
+      const selected = Boolean(radio && radio.value === day2Choice);
+
+      if (radio) radio.checked = selected;
+      resource.classList.toggle("selected", selected);
     });
 
     // Weekend visit status.
@@ -432,9 +432,19 @@
       });
 
       card.querySelectorAll(".day2-choice").forEach(radio => {
-        radio.addEventListener("change", () => {
+        radio.addEventListener("click", event => {
           const weekNum = Number(radio.dataset.week);
-          state.day2Choice[weekNum] = radio.value;
+          const wasSelected = state.day2Choice[weekNum] === radio.value;
+
+          // Prevent native radio behavior so a selected choice can be toggled off.
+          event.preventDefault();
+
+          if (wasSelected) {
+            delete state.day2Choice[weekNum];
+          } else {
+            state.day2Choice[weekNum] = radio.value;
+          }
+
           save();
           refreshCard(card, weekNum);
         });
@@ -445,8 +455,15 @@
           const [weekNumText, qIndexText] = btn.dataset.qkey.split("-");
           const weekNum = Number(weekNumText);
           const qIndex = Number(qIndexText);
+          const option = Number(btn.dataset.option);
+          const key = btn.dataset.qkey;
 
-          state.quiz[btn.dataset.qkey] = Number(btn.dataset.option);
+          if (state.quiz[key] === option) {
+            delete state.quiz[key];
+          } else {
+            state.quiz[key] = option;
+          }
+
           save();
           refreshQuizItem(card, weekNum, qIndex);
         });
