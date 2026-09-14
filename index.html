@@ -100,12 +100,36 @@
         <button id="collapseBtn" class="btn primary" type="button">펼친 내용 모두 접기</button>
         <button id="resetBtn" class="btn danger" type="button">학습 기록 초기화</button>
       </div>
+
+      <details class="sync-parent" id="syncPanel">
+        <summary>부모용 · 가족 클라우드 기록</summary>
+        <p>기존 이 기기 기록은 자동으로 옮기거나 덮어쓰지 않습니다. 이전은 아래에서 직접 확인한 뒤에만 실행됩니다.</p>
+        <div class="sync-row">
+          <span id="syncStatus" role="status" aria-live="polite">📴 이 기기에만 저장됨 · 연결 확인 대기</span>
+          <button id="syncButton" class="btn subtle" type="button">동기화 확인</button>
+        </div>
+        <div class="migration-card">
+          <b>기존 한국사 기록 클라우드로 이전</b>
+          <p>미리보기에서 신규·동일·충돌 항목을 확인하고, JSON 백업을 내려받은 뒤 직접 이전할 수 있어요. 충돌은 자동으로 덮어쓰지 않습니다.</p>
+          <button id="migrationInspect" class="btn" type="button">기존 기록 확인</button>
+          <div id="migrationSummary" hidden></div>
+          <div id="migrationActions" class="migration-actions" hidden>
+            <button id="migrationBackup" class="btn" type="button">JSON 백업 다운로드</button>
+            <button id="migrationRun" class="btn primary" type="button">이전하기</button>
+          </div>
+          <p id="migrationResult" class="migration-result" role="status"></p>
+        </div>
+      </details>
     </section>
 
     <footer>희윤이 학습도우미 · 한국사 24주 준비보드</footer>
   </main>
 
   <script src="./data.js"></script>
+  <script src="./supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.8/dist/umd/supabase.js" crossorigin="anonymous"></script>
+  <script src="./history-cloud.js"></script>
+  <script src="./history-migration.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>

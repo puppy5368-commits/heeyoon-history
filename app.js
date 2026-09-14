@@ -33,6 +33,7 @@
   }
 
   let state = loadState();
+  let savedSnapshot = JSON.parse(JSON.stringify(state));
   const weeksEl = document.getElementById("weeks");
 
   const escapeHtml = (s) => String(s).replace(/[&<>"']/g, ch => ({
@@ -40,7 +41,15 @@
   })[ch]);
 
   function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    // The cloud layer always writes localStorage first and queues only this user action.
+    // If Supabase is unavailable, the established local-only behavior remains intact.
+    try {
+      if (window.historyCloud) state = window.historyCloud.save(savedSnapshot, state);
+      else localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+    savedSnapshot = JSON.parse(JSON.stringify(state));
     updateGlobalStats();
   }
 
@@ -508,6 +517,15 @@
   });
 
   render();
+
+  window.historyCloud?.init({
+    onChange: () => {
+      // Remote data is applied only through the cloud layer's non-destructive merge.
+      state = loadState();
+      savedSnapshot = JSON.parse(JSON.stringify(state));
+      render();
+    }
+  });
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {

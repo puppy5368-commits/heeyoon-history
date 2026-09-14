@@ -1,5 +1,5 @@
-const CACHE="heeyoon-history-v2-1";
-const ASSETS=["./","./index.html","./styles.css","./data.js","./app.js","./manifest.json","./icons/icon-192.png","./icons/icon-512.png"];
+const CACHE="heeyoon-history-v2-2";
+const ASSETS=["./","./index.html","./styles.css","./data.js","./app.js","./history-cloud.js","./history-migration.js","./supabase-config.js","./manifest.json","./icons/icon-192.png","./icons/icon-512.png"];
 
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));

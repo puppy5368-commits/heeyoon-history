@@ -139,6 +139,16 @@ h1 small{font-size:.45em;opacity:.75}
   margin-top:14px;background:#fff9eb;border:1px solid #f1dfb3;color:#6e5725;
   border-radius:15px;padding:13px;font-size:12px;line-height:1.65
 }
+.sync-parent{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px;color:var(--muted);font-size:12px;line-height:1.65}
+.sync-parent summary{cursor:pointer;color:var(--muted);font-weight:700;min-height:36px;padding:7px 0}
+.sync-parent p{margin:7px 0}
+.sync-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:9px}
+.sync-row span{flex:1;min-width:180px}
+.btn.subtle{padding:7px 9px;color:var(--muted);font-size:12px}
+.migration-card{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:13px;background:#fafcff}
+.migration-card b{color:var(--text)}
+.migration-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.migration-result:empty{display:none}
 .hidden{display:none!important}
 footer{text-align:center;color:var(--muted);font-size:11px;margin-top:26px}
 
@@ -149,6 +159,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;margin-top:26px}
   .routine{grid-template-columns:1fr}
   .weeks{grid-template-columns:1fr}
   .rules-grid{grid-template-columns:1fr}
+  .sync-row{align-items:flex-start}
 }
 
 
