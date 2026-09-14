@@ -149,6 +149,7 @@ h1 small{font-size:.45em;opacity:.75}
 .migration-card b{color:var(--text)}
 .migration-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .migration-result:empty{display:none}
+.migration-key-list{margin-top:8px}.migration-key-list summary{cursor:pointer;font-size:11px}.migration-key-list code{display:block;margin-top:6px;overflow-wrap:anywhere;font-size:11px;color:var(--muted)}
 .hidden{display:none!important}
 footer{text-align:center;color:var(--muted);font-size:11px;margin-top:26px}
 

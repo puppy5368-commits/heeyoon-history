@@ -274,12 +274,13 @@
   let client = null;
   let auth = null;
   let sessionId = null;
+  let familyOwner = null;
   let connecting = null;
   let reconnecting = null;
   let epoch = 0;
   const $ = id => root.document?.getElementById(id);
   const showStatus = message => { const el = $("syncStatus"); if (el) el.textContent = message; };
-  function offline() { sessionId = null; engine?.setUser(null); }
+  function offline() { sessionId = null; familyOwner = null; engine?.setUser(null); }
   async function attach(session) {
     if (!session || !client || !engine) return;
     if (sessionId === session.user.id) return engine.sync();
@@ -289,6 +290,7 @@
       try {
         const { data: owner, error } = await client.rpc("heeyoon_family_owner");
         if (current !== epoch || error || !/^[0-9a-f-]{36}$/i.test(owner || "")) throw Error("family-unavailable");
+        familyOwner = owner;
         engine.setUser(owner);
         sessionId = session.user.id;
         await engine.sync();
@@ -345,11 +347,9 @@
     save(before, after) { return engine ? engine.commit(before, after) : after; },
     reconnect,
     migrationClient: () => client,
-    migrationOwner: async () => {
-      if (!client) return null;
-      const { data, error } = await client.rpc("heeyoon_family_owner");
-      return error ? null : data;
-    },
+    // attach() has already verified this value with the server. Reusing it avoids a
+    // second RPC during the parent-only comparison flow.
+    migrationOwner: () => familyOwner,
     engine: () => engine
   };
   root.HistoryCloud = { STORAGE_KEY, TABLE, rows, field, apply, migrationDecision, create };
