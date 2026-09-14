@@ -275,12 +275,13 @@
   let auth = null;
   let sessionId = null;
   let familyOwner = null;
+  let familySession = null;
   let connecting = null;
   let reconnecting = null;
   let epoch = 0;
   const $ = id => root.document?.getElementById(id);
   const showStatus = message => { const el = $("syncStatus"); if (el) el.textContent = message; };
-  function offline() { sessionId = null; familyOwner = null; engine?.setUser(null); }
+  function offline() { sessionId = null; familyOwner = null; familySession = null; engine?.setUser(null); }
   async function attach(session) {
     if (!session || !client || !engine) return;
     if (sessionId === session.user.id) return engine.sync();
@@ -291,6 +292,7 @@
         const { data: owner, error } = await client.rpc("heeyoon_family_owner");
         if (current !== epoch || error || !/^[0-9a-f-]{36}$/i.test(owner || "")) throw Error("family-unavailable");
         familyOwner = owner;
+        familySession = { id: session.user.id, role: session.user.role };
         engine.setUser(owner);
         sessionId = session.user.id;
         await engine.sync();
@@ -350,6 +352,9 @@
     // attach() has already verified this value with the server. Reusing it avoids a
     // second RPC during the parent-only comparison flow.
     migrationOwner: () => familyOwner,
+    // attach() receives Supabase's authenticated session; avoid another auth SDK call
+    // while the parent migration is waiting to begin.
+    migrationSession: () => ({ session: familySession ? { user: familySession } : null, error: null }),
     engine: () => engine
   };
   root.HistoryCloud = { STORAGE_KEY, TABLE, rows, field, apply, migrationDecision, create };
