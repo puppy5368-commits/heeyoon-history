@@ -97,6 +97,7 @@
     let running = false;
     let again = false;
     let failed = false;
+    let lastError = null;
     let localProblem = false;
     let lastAt = 0;
 
@@ -127,11 +128,29 @@
         if (raw !== null) storage.setItem(backupKey, raw);
       }
     }
+    function original() {
+      try {
+        const raw = storage.getItem(`${scoped()}original:${STORAGE_KEY}`);
+        if (!raw) return null;
+        const value = JSON.parse(raw);
+        return validState(value) ? value : null;
+      } catch {
+        return null;
+      }
+    }
+    function meaningful(value) {
+      return value === true
+        || (typeof value === "string" && value.length > 0)
+        || typeof value === "number";
+    }
     function status() {
       if (localProblem) return onStatus("⚠️ 이 기기 저장 공간을 확인해 주세요");
       if (!user) return onStatus("📴 이 기기에만 저장됨 · 연결 확인 대기");
       if (!online()) return onStatus("📴 오프라인 · 이 기기에 저장됨");
-      if (failed) return onStatus("⚠️ 클라우드 저장 실패 · 이 기기 기록은 안전함");
+      if (failed) {
+        const code = lastError?.code ? ` (${lastError.code})` : "";
+        return onStatus(`⚠️ 클라우드 저장 실패${code} · 이 기기 기록은 안전함`);
+      }
       const hasConflict = operations().some(op => op.conflict)
         || Array.from({ length: storage.length }, (_, i) => storage.key(i))
           .filter(key => key?.startsWith(`${scoped()}row:`))
@@ -173,20 +192,73 @@
     async function query(fieldKey) {
       return client.from(TABLE).select("*").eq("user_id", user).eq("field_key", fieldKey).maybeSingle();
     }
+    function rememberRemote(op, remote) {
+      storage.removeItem(op.key);
+      storage.setItem(rowMetaKey(op.fieldKey), JSON.stringify({
+        fieldKey: op.fieldKey,
+        value: remote.value,
+        revision: remote.revision,
+        conflict: false
+      }));
+    }
+    function holdConflict(op) {
+      storage.setItem(op.key, JSON.stringify({ ...op, conflict: true }));
+    }
+    function queueMissingLocalRows(remoteFieldKeys) {
+      const baseline = original();
+      const local = read(storage);
+      // The original snapshot is made before the first normal learning change.
+      // Without it, auto-queuing could accidentally become legacy migration.
+      if (!baseline || !local) return 0;
+      const baselineRows = rows(baseline);
+      const localRows = rows(local);
+      const queued = new Set(operations().map(op => op.fieldKey));
+      let recovered = 0;
+      for (const row of Object.values(localRows)) {
+        if (remoteFieldKeys.has(row.fieldKey) || queued.has(row.fieldKey)) continue;
+        if (!meaningful(row.value)) continue;
+        const baselineValue = baselineRows[row.fieldKey]?.value ?? null;
+        // Only a post-baseline local change can be safely recovered. Existing
+        // migration records stay untouched even if this device has no row meta.
+        if (equal(row.value, baselineValue)) continue;
+        lastAt = Math.max(Date.now(), lastAt + 1, ...operations().map(op => op.at + 1));
+        // Both before and expected are null because cloud was just observed to
+        // have no row. If another device creates the field meanwhile, send()
+        // treats it as a conflict rather than overwriting it.
+        storage.setItem(operationKey(), JSON.stringify({
+          fieldKey: row.fieldKey,
+          value: row.value,
+          before: null,
+          expected: null,
+          revision: null,
+          at: lastAt,
+          recovered: true
+        }));
+        queued.add(row.fieldKey);
+        recovered++;
+      }
+      return recovered;
+    }
     async function send(op, who) {
-      if (op.conflict) return;
       const got = await query(op.fieldKey);
       if (got.error) throw got.error;
       if (user !== who) return;
       const current = got.data;
+      // Earlier builds incorrectly turned *write errors* into a permanent
+      // conflict. A missing cloud row is safe to retry; an existing row remains
+      // protected as a real conflict and is never overwritten automatically.
+      if (op.conflict) {
+        if (current) return;
+        storage.setItem(op.key, JSON.stringify({ ...op, conflict: false }));
+      }
       const remoteValue = current ? current.value : null;
       if (current && equal(remoteValue, op.value)) {
-        storage.removeItem(op.key);
+        rememberRemote(op, current);
         return;
       }
       const conflict = current && !equal(remoteValue, op.expected) && !equal(remoteValue, op.before);
       if (conflict || (!current && op.revision !== null)) {
-        storage.setItem(op.key, JSON.stringify({ ...op, conflict: true }));
+        holdConflict(op);
         return;
       }
       let result;
@@ -201,21 +273,43 @@
           .select("*").maybeSingle();
       }
       if (user !== who) return;
-      if (result.error || !result.data) {
-        storage.setItem(op.key, JSON.stringify({ ...op, conflict: true }));
+      if (result.error) {
+        // A concurrent insert is not an error to retry blindly. Re-read it and
+        // preserve a different value as a true conflict.
+        if (!current && result.error.code === "23505") {
+          const raced = await query(op.fieldKey);
+          if (raced.error) throw raced.error;
+          if (raced.data && equal(raced.data.value, op.value)) rememberRemote(op, raced.data);
+          else if (raced.data) holdConflict(op);
+          else throw result.error;
+          return;
+        }
+        // Transport/RLS/server failures keep the queued operation intact so a
+        // later reconnect or sync button can retry it without touching local data.
+        throw result.error;
+      }
+      if (!result.data) {
+        // A retry will first query the field; if the write did reach Supabase it
+        // will be recognized as identical, otherwise it remains safely queued.
+        throw Error("history-cloud-write-empty-response");
+      }
+      if (!current && result.data.field_key !== op.fieldKey) {
+        // Defensive boundary: never clear a local queue from an unrelated row.
+        holdConflict(op);
         return;
       }
-      storage.removeItem(op.key);
-      storage.setItem(rowMetaKey(op.fieldKey), JSON.stringify({ fieldKey: op.fieldKey, value: result.data.value, revision: result.data.revision, conflict: false }));
+      rememberRemote(op, result.data);
     }
     async function pull(who) {
       let offset = 0;
+      const remoteFieldKeys = new Set();
       while (user === who) {
         const result = await client.from(TABLE).select("*").eq("user_id", who).order("field_key").range(offset, offset + 499);
         if (result.error) throw result.error;
         let changed = false;
         for (const remote of result.data || []) {
           if (user !== who) return;
+          remoteFieldKeys.add(remote.field_key);
           const pending = operations().some(op => op.fieldKey === remote.field_key && !op.conflict);
           const local = read(storage);
           if (!local) continue; // A corrupt key is never replaced by cloud data.
@@ -237,6 +331,11 @@
         if ((result.data || []).length < 500) break;
         offset += 500;
       }
+      if (user === who && queueMissingLocalRows(remoteFieldKeys)) {
+        // This sync has already sent its initial queue. Run it once more so
+        // recovery does not wait for the learner to touch the same control again.
+        again = true;
+      }
     }
     async function sync() {
       if (!client || !user) { status(); return; }
@@ -244,6 +343,7 @@
       if (!online()) { status(); return; }
       running = true;
       failed = false;
+      lastError = null;
       const who = user;
       try {
         for (const op of operations()) {
@@ -251,8 +351,16 @@
           await send(op, who);
         }
         if (user === who) await pull(who);
-      } catch {
+      } catch (error) {
         failed = true;
+        lastError = error;
+        root.console?.error?.("한국사 진도 클라우드 저장 실패", {
+          status: error?.status,
+          code: error?.code,
+          message: error?.message,
+          details: error?.details,
+          hint: error?.hint
+        });
       } finally {
         running = false;
         if (user === who) status();
