@@ -9,6 +9,9 @@
   const STORAGE_KEY = "heeyoon-history-progress";
   const PREFIX = "heeyoon-history:sync:v1:family:v1:";
   const TABLE = "history_progress";
+  // Shown in the parent-only read-only diagnostic view. Change this with every
+  // deployed history-cloud.js build so a device can identify the exact file it ran.
+  const BUILD = "history-cloud-2026-09-15-diagnostic-1";
   const own = (value, key) => Object.prototype.hasOwnProperty.call(value, key);
   const clone = value => JSON.parse(JSON.stringify(value));
   const equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -142,6 +145,20 @@
       return value === true
         || (typeof value === "string" && value.length > 0)
         || typeof value === "number";
+    }
+    function missingLocalRowDecision(fieldKey, remoteFieldKeys) {
+      const baseline = original();
+      const local = read(storage);
+      if (!baseline) return { recover: false, reason: "original snapshot 없음" };
+      if (!local) return { recover: false, reason: "현재 localStorage 상태를 읽을 수 없음" };
+      const localField = field(local, fieldKey);
+      if (!localField.known) return { recover: false, reason: "현재 localStorage에 해당 field가 없음" };
+      if (remoteFieldKeys.has(fieldKey)) return { recover: false, reason: "cloud에 이미 행이 있음" };
+      if (operations().some(op => op.fieldKey === fieldKey)) return { recover: false, reason: "이미 retry/op queue에 작업이 있음" };
+      if (!meaningful(localField.value)) return { recover: false, reason: "값이 meaningful 하지 않음" };
+      const baselineValue = rows(baseline)[fieldKey]?.value ?? null;
+      if (equal(localField.value, baselineValue)) return { recover: false, reason: "baseline과 동일" };
+      return { recover: true, reason: "cloud 행 없음 · queue 없음 · meaningful · baseline 이후 변경", value: localField.value, baselineValue };
     }
     function status() {
       if (localProblem) return onStatus("⚠️ 이 기기 저장 공간을 확인해 주세요");
@@ -375,7 +392,18 @@
       user = value;
       status();
     }
-    return { commit, sync, setClient: value => { client = value; }, setUser, read: () => read(storage), rows, migrationDecision, table: TABLE };
+    function diagnostic(fieldKey, remoteFieldKeys) {
+      const local = read(storage);
+      const baseline = original();
+      return {
+        local: { valid: Boolean(local), field: local ? field(local, fieldKey) : null },
+        original: { valid: Boolean(baseline), field: baseline ? field(baseline, fieldKey) : null },
+        operations: operations().filter(op => op.fieldKey === fieldKey),
+        rowMeta: meta(fieldKey),
+        recovery: missingLocalRowDecision(fieldKey, remoteFieldKeys)
+      };
+    }
+    return { commit, sync, setClient: value => { client = value; }, setUser, read: () => read(storage), rows, migrationDecision, diagnostic, table: TABLE };
   }
 
   let engine = null;
@@ -387,6 +415,10 @@
   let connecting = null;
   let reconnecting = null;
   let epoch = 0;
+  const readOnlyDiagnosticMode = () => {
+    try { return new URLSearchParams(root.location?.search || "").get("diagnostic") === "1"; }
+    catch { return false; }
+  };
   const $ = id => root.document?.getElementById(id);
   const showStatus = message => { const el = $("syncStatus"); if (el) el.textContent = message; };
   function offline() { sessionId = null; familyOwner = null; familySession = null; engine?.setUser(null); }
@@ -425,6 +457,13 @@
     try { await reconnecting; } finally { reconnecting = null; }
   }
   function start() {
+    // The diagnostic URL must never start authentication, normal sync, queue
+    // recovery, or any localStorage writes. Its cloud request is a direct GET
+    // made only by readOnlyDiagnostic() below.
+    if (readOnlyDiagnosticMode()) {
+      showStatus("🔎 읽기 전용 진단 모드 · 동기화와 복구를 실행하지 않음");
+      return;
+    }
     const config = root.HEEYOON_SUPABASE_CONFIG || {};
     if (!root.supabase || !/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(config.projectUrl || "") || !/^sb_publishable_[A-Za-z0-9_-]+$/.test(config.publishableKey || "")) {
       offline();
@@ -447,11 +486,13 @@
   root.historyCloud = {
     init({ onChange }) {
       engine = create({ onStatus: showStatus, onChange });
-      $("syncButton")?.addEventListener("click", () => void reconnect());
-      root.addEventListener?.("online", () => void reconnect());
-      root.addEventListener?.("offline", () => void engine.sync());
-      root.document?.addEventListener("visibilitychange", () => { if (!root.document.hidden) void reconnect(); });
-      root.addEventListener?.("storage", event => { if (event.key === STORAGE_KEY) onChange(); });
+      if (!readOnlyDiagnosticMode()) {
+        $("syncButton")?.addEventListener("click", () => void reconnect());
+        root.addEventListener?.("online", () => void reconnect());
+        root.addEventListener?.("offline", () => void engine.sync());
+        root.document?.addEventListener("visibilitychange", () => { if (!root.document.hidden) void reconnect(); });
+        root.addEventListener?.("storage", event => { if (event.key === STORAGE_KEY) onChange(); });
+      }
       start();
     },
     save(before, after) { return engine ? engine.commit(before, after) : after; },
@@ -463,8 +504,52 @@
     // attach() receives Supabase's authenticated session; avoid another auth SDK call
     // while the parent migration is waiting to begin.
     migrationSession: () => ({ session: familySession ? { user: familySession } : null, error: null }),
-    engine: () => engine
+    engine: () => engine,
+    build: () => BUILD,
+    isReadOnlyDiagnostic: readOnlyDiagnosticMode,
+    async readOnlyDiagnostic(fieldKey = "day:3-1") {
+      if (!readOnlyDiagnosticMode()) throw Error("읽기 전용 진단 URL에서만 실행할 수 있습니다.");
+      const config = root.HEEYOON_SUPABASE_CONFIG || {};
+      const owner = root.localStorage?.getItem(`${PREFIX}owner`) || "";
+      let remoteRows = [];
+      let cloudError = "";
+      try {
+        const savedAuth = JSON.parse(root.localStorage?.getItem("heeyoon-history:auth:v1") || "null");
+        const token = savedAuth?.access_token;
+        if (!owner) throw Error("이 기기에 저장된 family owner ID가 없습니다.");
+        if (!token) throw Error("이 기기에 저장된 로그인 세션이 없습니다.");
+        if (!root.fetch || !config.projectUrl || !config.publishableKey) throw Error("클라우드 조회 설정을 찾을 수 없습니다.");
+        const base = config.projectUrl.replace(/\/$/, "");
+        const url = `${base}/rest/v1/${TABLE}?select=field_key,value,revision&user_id=eq.${encodeURIComponent(owner)}&order=field_key.asc`;
+        const response = await root.fetch(url, {
+          method: "GET",
+          headers: { apikey: config.publishableKey, Authorization: `Bearer ${token}` }
+        });
+        if (!response.ok) throw Error(`Supabase SELECT 실패 (HTTP ${response.status})`);
+        const data = await response.json();
+        if (!Array.isArray(data)) throw Error("Supabase SELECT 응답 형식이 올바르지 않습니다.");
+        remoteRows = data.map(row => ({ fieldKey: row.field_key, value: row.value, revision: row.revision }));
+      } catch (error) {
+        cloudError = error instanceof Error ? error.message : "Supabase SELECT를 실행하지 못했습니다.";
+      }
+      const remoteFieldKeys = new Set(remoteRows.map(row => row.fieldKey));
+      const local = engine?.diagnostic(fieldKey, remoteFieldKeys) || null;
+      if (cloudError && local) {
+        local.recovery = { recover: null, reason: `Supabase SELECT 실패로 판단 불가: ${cloudError}` };
+      }
+      return {
+        build: BUILD,
+        fieldKey,
+        ownerPresent: Boolean(owner),
+        local,
+        cloud: cloudError ? { queried: false, error: cloudError } : {
+          queried: true,
+          row: remoteRows.find(row => row.fieldKey === fieldKey) || null,
+          rowCount: remoteRows.length
+        }
+      };
+    }
   };
-  root.HistoryCloud = { STORAGE_KEY, TABLE, rows, field, apply, migrationDecision, create };
+  root.HistoryCloud = { STORAGE_KEY, TABLE, BUILD, rows, field, apply, migrationDecision, create };
   if (typeof module !== "undefined") module.exports = root.HistoryCloud;
 })(typeof window === "undefined" ? globalThis : window);

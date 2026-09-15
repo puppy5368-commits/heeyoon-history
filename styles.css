@@ -152,6 +152,13 @@ h1 small{font-size:.45em;opacity:.75}
 .migration-key-list{margin-top:8px}.migration-key-list summary{cursor:pointer;font-size:11px}.migration-key-list code{display:block;margin-top:6px;overflow-wrap:anywhere;font-size:11px;color:var(--muted)}
 .migration-diagnostic{margin-top:9px;padding:8px 9px;border-radius:9px;background:#f3f6fa;font-size:11px;line-height:1.55;color:var(--muted)}
 .migration-diagnostic p{margin:3px 0}.migration-diagnostic code{overflow-wrap:anywhere;color:var(--text)}
+.readonly-diagnostic-card{margin-top:10px;padding:12px;border:1px solid #b8c9df;border-radius:13px;background:#f4f8fd}
+.readonly-diagnostic-card b{color:var(--text)}
+.readonly-diagnostic-card .btn{display:inline-block;text-decoration:none;margin-top:4px}
+.readonly-diagnostic-result{margin-top:10px;padding:10px;border-radius:10px;background:#fff;border:1px solid var(--line);font-size:11px;line-height:1.6;color:var(--muted);overflow-wrap:anywhere}
+.readonly-diagnostic-result dl{margin:0}.readonly-diagnostic-result dt{margin-top:10px;font-weight:800;color:var(--text)}.readonly-diagnostic-result dt:first-child{margin-top:0}.readonly-diagnostic-result dd{margin:2px 0 0}.readonly-diagnostic-result code{color:var(--text);white-space:pre-wrap}
+.read-only-diagnostic .actions,.read-only-diagnostic .sync-row,.read-only-diagnostic .migration-card{display:none}
+.read-only-diagnostic .weeks,.read-only-diagnostic .filters{pointer-events:none;opacity:.78}
 .hidden{display:none!important}
 footer{text-align:center;color:var(--muted);font-size:11px;margin-top:26px}
 

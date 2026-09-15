@@ -6,6 +6,7 @@
   // 이후 업데이트에서는 이 STORAGE_KEY와 기존 필드를 보존합니다.
   const STORAGE_KEY = "heeyoon-history-progress";
   const DATA_VERSION = 1;
+  const readOnlyDiagnostic = new URLSearchParams(window.location.search).get("diagnostic") === "1";
 
   const blankState = () => ({
     version: DATA_VERSION,
@@ -41,6 +42,7 @@
   })[ch]);
 
   function save() {
+    if (readOnlyDiagnostic) return;
     // The cloud layer always writes localStorage first and queues only this user action.
     // If Supabase is unavailable, the established local-only behavior remains intact.
     try {
@@ -518,6 +520,11 @@
 
   render();
 
+  if (readOnlyDiagnostic) {
+    document.body.classList.add("read-only-diagnostic");
+    document.getElementById("syncPanel")?.setAttribute("open", "");
+  }
+
   window.historyCloud?.init({
     onChange: () => {
       // Remote data is applied only through the cloud layer's non-destructive merge.
@@ -527,7 +534,7 @@
     }
   });
 
-  if ("serviceWorker" in navigator) {
+  if (!readOnlyDiagnostic && "serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker.register("./sw.js").catch(() => {});
     });

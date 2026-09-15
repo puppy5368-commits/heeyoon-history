@@ -108,6 +108,14 @@
           <span id="syncStatus" role="status" aria-live="polite">📴 이 기기에만 저장됨 · 연결 확인 대기</span>
           <button id="syncButton" class="btn subtle" type="button">동기화 확인</button>
         </div>
+        <div class="readonly-diagnostic-card" id="readonlyDiagnosticCard">
+          <b>읽기 전용 DAY 3-1 진단</b>
+          <p>이 진단 모드에서는 동기화·복구·이전·서비스워커 등록을 실행하지 않습니다. localStorage와 Supabase는 조회만 합니다.</p>
+          <a id="readonlyDiagnosticLink" class="btn" href="?diagnostic=1">이 기기의 읽기 전용 진단 열기</a>
+          <button id="readonlyDiagnosticRun" class="btn primary" type="button" hidden>DAY 3-1 진단 실행</button>
+          <p id="readonlyDiagnosticStatus" class="migration-result" role="status"></p>
+          <div id="readonlyDiagnosticResult" class="readonly-diagnostic-result" hidden></div>
+        </div>
         <div class="migration-card">
           <b>기존 한국사 기록 클라우드로 이전</b>
           <p>미리보기에서 신규·동일·충돌 항목을 확인하고, JSON 백업을 내려받은 뒤 직접 이전할 수 있어요. 충돌은 자동으로 덮어쓰지 않습니다.</p>
@@ -128,8 +136,9 @@
   <script src="./data.js"></script>
   <script src="./supabase-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.8/dist/umd/supabase.js" crossorigin="anonymous"></script>
-  <script src="./history-cloud.js"></script>
+  <script src="./history-cloud.js?build=history-cloud-2026-09-15-diagnostic-1" data-history-cloud-build="history-cloud-2026-09-15-diagnostic-1"></script>
   <script src="./history-migration.js"></script>
+  <script src="./history-diagnostic.js?build=history-cloud-2026-09-15-diagnostic-1"></script>
   <script src="./app.js"></script>
 </body>
 </html>

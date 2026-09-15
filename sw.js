@@ -1,5 +1,5 @@
-const CACHE="heeyoon-history-v2-2";
-const ASSETS=["./","./index.html","./styles.css","./data.js","./app.js","./history-cloud.js","./history-migration.js","./supabase-config.js","./manifest.json","./icons/icon-192.png","./icons/icon-512.png"];
+const CACHE="heeyoon-history-v2-3-diagnostic";
+const ASSETS=["./","./index.html","./styles.css","./data.js","./app.js","./history-cloud.js?build=history-cloud-2026-09-15-diagnostic-1","./history-migration.js","./history-diagnostic.js?build=history-cloud-2026-09-15-diagnostic-1","./supabase-config.js","./manifest.json","./icons/icon-192.png","./icons/icon-512.png"];
 
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
@@ -14,6 +14,10 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", event => {
+  // History-cloud diagnostics query Supabase directly with a GET. Never place
+  // authenticated API responses in the app cache; only same-origin GET assets
+  // belong to this offline cache.
+  if (event.request.method !== "GET" || new URL(event.request.url).origin !== self.location.origin) return;
   event.respondWith(
     fetch(event.request)
       .then(response => {
