@@ -11,7 +11,7 @@
   const TABLE = "history_progress";
   // Shown in the parent-only read-only diagnostic view. Change this with every
   // deployed history-cloud.js build so a device can identify the exact file it ran.
-  const BUILD = "history-cloud-2026-09-15-diagnostic-1";
+  const BUILD = "history-cloud-2026-09-15-local-queue-1";
   const own = (value, key) => Object.prototype.hasOwnProperty.call(value, key);
   const clone = value => JSON.parse(JSON.stringify(value));
   const equal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -97,12 +97,17 @@
   function create({ storage = root.localStorage, onStatus = () => {}, onChange = () => {}, online = () => root.navigator?.onLine !== false } = {}) {
     let client = null;
     let user = null;
-    let running = false;
+    let syncTask = null;
     let again = false;
     let failed = false;
     let lastError = null;
     let localProblem = false;
     let lastAt = 0;
+    // Retain failed storage writes with stable op keys until a later save/sync.
+    // localStorage cannot atomically commit several keys; never lose the user's
+    // intent just because an op write fails after the progress write succeeded.
+    const pendingLocal = new Map();
+    let pendingOriginal = null;
 
     const scoped = () => PREFIX;
     const json = (key, fallback) => {
@@ -126,10 +131,23 @@
     const meta = fieldKey => json(rowMetaKey(fieldKey), null);
     function backupOriginal() {
       const backupKey = `${scoped()}original:${STORAGE_KEY}`;
-      if (storage.getItem(backupKey) === null) {
-        const raw = storage.getItem(STORAGE_KEY);
-        if (raw !== null) storage.setItem(backupKey, raw);
+      if (pendingOriginal !== null) {
+        if (storage.getItem(backupKey) === null) storage.setItem(backupKey, pendingOriginal);
+        pendingOriginal = null;
       }
+    }
+    function flushLocalQueue() {
+      let problem = null;
+      try { backupOriginal(); } catch (error) { problem = error; }
+      for (const [key, op] of pendingLocal) {
+        try {
+          storage.setItem(key, JSON.stringify(op));
+          pendingLocal.delete(key);
+        } catch (error) { problem = error; }
+      }
+      localProblem = Boolean(problem);
+      if (problem) root.console?.error?.("한국사 로컬 동기화 기록 저장 실패 · 다음 저장/동기화에서 재시도", problem);
+      return !problem;
     }
     function original() {
       try {
@@ -161,8 +179,8 @@
       return { recover: true, reason: "cloud 행 없음 · queue 없음 · meaningful · baseline 이후 변경", value: localField.value, baselineValue };
     }
     function status() {
-      if (localProblem) return onStatus("⚠️ 이 기기 저장 공간을 확인해 주세요");
-      if (!user) return onStatus("📴 이 기기에만 저장됨 · 연결 확인 대기");
+      if (localProblem) return onStatus("⚠️ 학습 기록은 저장됨 · 동기화 큐/스냅샷 저장 실패 · 재시도 대기 (이 페이지를 닫지 마세요)");
+      if (!user) return onStatus(operations().length ? "📴 이 기기에 저장됨 · 동기화 큐 보관 중 · 연결 확인 대기" : "📴 이 기기에만 저장됨 · 연결 확인 대기");
       if (!online()) return onStatus("📴 오프라인 · 이 기기에 저장됨");
       if (failed) {
         const code = lastError?.code ? ` (${lastError.code})` : "";
@@ -181,6 +199,12 @@
     }
     function commit(before, after) {
       if (!validState(after)) throw Error("history-local-invalid");
+      // Capture the pre-edit state before overwriting progress, including a
+      // fresh install with no progress key. Failure to write the backup must
+      // never prevent the primary learning record from being saved.
+      if (pendingOriginal === null) pendingOriginal = storage.getItem(STORAGE_KEY)
+        ?? JSON.stringify(before || { version: 1, days: {}, day2Choice: {}, quiz: {}, visits: {} });
+      writeLocal(after);
       const beforeRows = rows(before || { version: 1, days: {}, day2Choice: {}, quiz: {}, visits: {} });
       const afterRows = rows(after);
       const fieldKeys = new Set([...Object.keys(beforeRows), ...Object.keys(afterRows)]);
@@ -193,17 +217,10 @@
         lastAt = Math.max(Date.now(), lastAt + 1, ...operations().map(op => op.at + 1));
         changes.push({ fieldKey, value: newRow.value, before: oldRow.value, expected: baseline?.value ?? oldRow.value, revision: baseline?.revision ?? null, at: lastAt });
       }
-      // This write is deliberately before all network activity: offline use stays fully functional.
-      backupOriginal();
-      writeLocal(after);
-      if (!changes.length) { status(); return after; }
-      try {
-        for (const change of changes) storage.setItem(operationKey(), JSON.stringify(change));
-      } catch {
-        localProblem = true;
-      }
+      for (const change of changes) pendingLocal.set(operationKey(), change);
+      const recorded = flushLocalQueue();
       status();
-      void sync();
+      if (recorded) void sync();
       return after;
     }
     async function query(fieldKey) {
@@ -327,7 +344,8 @@
         for (const remote of result.data || []) {
           if (user !== who) return;
           remoteFieldKeys.add(remote.field_key);
-          const pending = operations().some(op => op.fieldKey === remote.field_key && !op.conflict);
+          const pending = operations().some(op => op.fieldKey === remote.field_key && !op.conflict)
+            || Array.from(pendingLocal.values()).some(op => op.fieldKey === remote.field_key);
           const local = read(storage);
           if (!local) continue; // A corrupt key is never replaced by cloud data.
           const current = field(local, remote.field_key);
@@ -354,11 +372,22 @@
         again = true;
       }
     }
-    async function sync() {
+    function sync() {
+      if (syncTask) { again = true; return syncTask; }
+      syncTask = Promise.resolve().then(async () => {
+        do {
+          again = false;
+          await syncOnce();
+        } while (again);
+      }).finally(() => { syncTask = null; });
+      return syncTask;
+    }
+    async function syncOnce() {
+      // Retry local bookkeeping even while auth/client/network are unavailable.
+      // Do not pull or send while some newer user operations remain unrecorded.
+      if (!flushLocalQueue()) { status(); return; }
       if (!client || !user) { status(); return; }
-      if (running) { again = true; return; }
       if (!online()) { status(); return; }
-      running = true;
       failed = false;
       lastError = null;
       const who = user;
@@ -367,7 +396,7 @@
           if (user !== who) return;
           await send(op, who);
         }
-        if (user === who) await pull(who);
+        if (user === who && !pendingLocal.size && pendingOriginal === null) await pull(who);
       } catch (error) {
         failed = true;
         lastError = error;
@@ -379,9 +408,7 @@
           hint: error?.hint
         });
       } finally {
-        running = false;
         if (user === who) status();
-        if (again) { again = false; void sync(); }
       }
     }
     function setUser(value) {
@@ -391,6 +418,7 @@
       storage.setItem(`${scoped()}owner`, value);
       user = value;
       status();
+      if (client && (operations().length || pendingLocal.size)) void sync();
     }
     function diagnostic(fieldKey, remoteFieldKeys) {
       const local = read(storage);
@@ -403,10 +431,13 @@
         recovery: missingLocalRowDecision(fieldKey, remoteFieldKeys)
       };
     }
-    return { commit, sync, setClient: value => { client = value; }, setUser, read: () => read(storage), rows, migrationDecision, diagnostic, table: TABLE };
+    return { commit, sync, setClient: value => {
+      client = value;
+      if (user && (operations().length || pendingLocal.size)) void sync();
+    }, setUser, read: () => read(storage), rows, migrationDecision, diagnostic, table: TABLE };
   }
 
-  let engine = null;
+  let onLocalChange = () => {};
   let client = null;
   let auth = null;
   let sessionId = null;
@@ -421,6 +452,9 @@
   };
   const $ = id => root.document?.getElementById(id);
   const showStatus = message => { const el = $("syncStatus"); if (el) el.textContent = message; };
+  // Construction does not read/write storage, authenticate, or access network.
+  // Keep this same engine across init() so pre-init operations are not lost.
+  const engine = create({ onStatus: showStatus, onChange: () => onLocalChange() });
   function offline() { sessionId = null; familyOwner = null; familySession = null; engine?.setUser(null); }
   async function attach(session) {
     if (!session || !client || !engine) return;
@@ -443,7 +477,11 @@
     try { await connecting; } finally { connecting = null; }
   }
   async function reconnect() {
-    if (!auth || !root.navigator?.onLine) { if (!auth) offline(); else void engine?.sync(); return; }
+    if (!auth || !root.navigator?.onLine) {
+      if (!auth) offline();
+      await engine.sync();
+      return;
+    }
     if (reconnecting) return reconnecting;
     reconnecting = (async () => {
       try {
@@ -485,7 +523,7 @@
   }
   root.historyCloud = {
     init({ onChange }) {
-      engine = create({ onStatus: showStatus, onChange });
+      onLocalChange = onChange || (() => {});
       if (!readOnlyDiagnosticMode()) {
         $("syncButton")?.addEventListener("click", () => void reconnect());
         root.addEventListener?.("online", () => void reconnect());
@@ -495,7 +533,10 @@
       }
       start();
     },
-    save(before, after) { return engine ? engine.commit(before, after) : after; },
+    save(before, after) {
+      if (readOnlyDiagnosticMode()) return after;
+      return engine.commit(before, after);
+    },
     reconnect,
     migrationClient: () => client,
     // attach() has already verified this value with the server. Reusing it avoids a

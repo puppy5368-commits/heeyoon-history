@@ -43,15 +43,35 @@
 
   function save() {
     if (readOnlyDiagnostic) return;
-    // The cloud layer always writes localStorage first and queues only this user action.
-    // If Supabase is unavailable, the established local-only behavior remains intact.
+    // Saving user intent never requires auth or a cloud client.
+    let recorded = false;
     try {
-      if (window.historyCloud) state = window.historyCloud.save(savedSnapshot, state);
-      else localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      if (typeof window.historyCloud?.save !== "function") throw Error("history-cloud-save-unavailable");
+      state = window.historyCloud.save(savedSnapshot, state);
+      recorded = true;
+    } catch (error) {
+      console.error("한국사 학습 변경 기록 실패 · 로컬 큐 기록 재시도", error);
+      try {
+        const engine = window.historyCloud?.engine?.();
+        if (!engine) throw Error("history-cloud-engine-unavailable");
+        state = engine.commit(savedSnapshot, state);
+        recorded = true;
+      } catch (retryError) {
+        console.error("한국사 동기화 큐 기록 실패", retryError);
+        // Preserve the learner's check, but do not advance savedSnapshot: the
+        // next save must retry the outstanding difference, not silently forget it.
+        let locallySaved = false;
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          locallySaved = true;
+        } catch (localError) { console.error("한국사 학습 기록 로컬 저장 실패", localError); }
+        const status = document.getElementById("syncStatus");
+        if (status) status.textContent = locallySaved
+          ? "⚠️ 학습 기록은 저장됨 · 동기화 큐 기록 실패 · 이 페이지를 닫지 말고 연결/저장 공간을 확인해 주세요"
+          : "⚠️ 학습 기록 저장 실패 · 이 페이지를 닫지 말고 저장 공간을 확인해 주세요";
+      }
     }
-    savedSnapshot = JSON.parse(JSON.stringify(state));
+    if (recorded) savedSnapshot = JSON.parse(JSON.stringify(state));
     updateGlobalStats();
   }
 

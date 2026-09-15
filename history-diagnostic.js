@@ -3,7 +3,7 @@
   "use strict";
   const FIELD_KEY = "day:3-1";
   const BUILD = "history-diagnostic-2026-09-15-click-fix-1";
-  const EXPECTED_CACHE = "heeyoon-history-v2-4-diagnostic-click-fix";
+  const EXPECTED_CACHE = "heeyoon-history-v2-5-local-queue";
   const $ = id => document.getElementById(id);
   const isDiagnosticMode = () => new URLSearchParams(window.location.search).get("diagnostic") === "1";
   const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({

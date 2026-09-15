@@ -1,5 +1,5 @@
-const CACHE="heeyoon-history-v2-4-diagnostic-click-fix";
-const ASSETS=["./","./index.html","./styles.css","./data.js","./app.js","./history-cloud.js?build=history-cloud-2026-09-15-diagnostic-1","./history-migration.js","./history-diagnostic.js?build=history-diagnostic-2026-09-15-click-fix-1","./supabase-config.js","./manifest.json","./icons/icon-192.png","./icons/icon-512.png"];
+const CACHE="heeyoon-history-v2-5-local-queue";
+const ASSETS=["./","./index.html","./styles.css","./data.js","./app.js?build=history-cloud-2026-09-15-local-queue-1","./history-cloud.js?build=history-cloud-2026-09-15-local-queue-1","./history-migration.js","./history-diagnostic.js?build=history-diagnostic-2026-09-15-click-fix-1","./supabase-config.js","./manifest.json","./icons/icon-192.png","./icons/icon-512.png"];
 
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
