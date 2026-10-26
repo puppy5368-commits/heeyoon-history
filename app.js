@@ -368,7 +368,7 @@
                 href="${escapeHtml(week.videoUrl || "https://www.youtube.com/@kbskids")}">
                 ▶ KBS Kids에서 영상 찾기 ↗
               </a>
-              <div class="video-help">영상을 본 뒤 위의 ‘EBS 역사 영상’ 선택을 체크하면 DAY 2가 완료돼요.</div>
+              <div class="video-help">영상을 본 뒤 위의 ‘KBS Kids 역사 영상’ 선택을 체크하면 DAY 2가 완료돼요.</div>
             </div>
           </section>
 
