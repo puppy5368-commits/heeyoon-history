@@ -21,7 +21,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사」의 차례와 연표를 보며 큰 시대 순서 훑어보기",
-    "video": "EBS 「역사가 술술」에서 관심 가는 역사 인물 편 1개 보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EC%97%AD%EC%82%AC%20%EC%8B%9C%EA%B0%84%20%EC%88%9C%EC%84%9C",
     "q": [
       "오늘 하루의 일을 시간 순서대로 말해볼까?",
       "삼국 시대와 조선 시대 중 무엇이 먼저일까?"
@@ -87,7 +88,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "나라가 세워지는 장면이 나오는 부분을 골라 ‘누가, 왜 세웠는지’ 보기",
-    "video": "EBS 「역사가 술술」에서 왕건 또는 이성계 관련 편 찾아보기",
+    "video": "KBS Kids 「별별 역사기차」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EB%B3%84%EB%B3%84%20%EC%97%AD%EC%82%AC%EA%B8%B0%EC%B0%A8%20%EB%82%98%EB%9D%BC%20%EC%99%95%EC%A1%B0",
     "q": [
       "새 나라를 세우려면 무엇이 필요할까?",
       "왕조가 바뀌면 사람들의 생활도 달라질까?"
@@ -153,7 +155,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "삼국 지도와 고려·조선의 수도가 나온 그림 찾아보기",
-    "video": "EBS 「역사가 술술」의 삼국 관련 편을 보며 지도 위치 확인하기",
+    "video": "KBS Kids 「별별 역사기차」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EB%B3%84%EB%B3%84%20%EC%97%AD%EC%82%AC%EA%B8%B0%EC%B0%A8%20%ED%95%9C%EA%B5%AD%EC%82%AC%20%EC%A7%80%EB%8F%84",
     "q": [
       "서울은 지금 우리나라에서 어떤 역할을 할까?",
       "고구려가 북쪽에 있었다는 사실은 왜 중요할까?"
@@ -219,7 +222,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "한 사건을 골라 ‘왜 일어났지?’와 ‘그 뒤 무엇이 달라졌지?’ 말해보기",
-    "video": "EBS 「역사가 술술」에서 전쟁이나 개혁을 다룬 편 1개 보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EC%82%AC%EA%B1%B4%20%EC%9B%90%EC%9D%B8%20%EA%B2%B0%EA%B3%BC",
     "q": [
       "비가 많이 오면 우리 생활에는 어떤 결과가 생길까?",
       "전쟁이 일어나는 데에는 어떤 원인이 있을까?"
@@ -285,7 +289,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1」에서 구석기 사람들의 생활 부분 읽기",
-    "video": "EBS 「역사가 술술」에서 선사 시대·구석기 관련 편 찾아보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EA%B5%AC%EC%84%9D%EA%B8%B0%20%EC%8B%9C%EB%8C%80",
     "q": [
       "구석기 사람들은 왜 이사를 자주 했을까?",
       "마트가 없던 시대에는 먹을 것을 어떻게 구했을까?"
@@ -351,7 +356,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1」에서 신석기와 농사의 시작 부분 읽기",
-    "video": "EBS 「역사가 술술」에서 신석기·농경 관련 편 찾아보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EC%8B%A0%EC%84%9D%EA%B8%B0%20%EC%8B%9C%EB%8C%80",
     "q": [
       "농사를 짓기 시작하면 왜 한곳에 살아야 할까?",
       "마을이 생기면 혼자 살 때와 무엇이 달라질까?"
@@ -417,7 +423,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1」에서 청동기와 고조선 부분 읽기",
-    "video": "EBS 「역사가 술술」에서 고조선·단군 관련 편 찾아보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EA%B3%A0%EC%A1%B0%EC%84%A0",
     "q": [
       "재산 차이가 커지면 사회는 어떻게 달라질까?",
       "나라에는 왜 법과 규칙이 필요할까?"
@@ -483,7 +490,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1」에서 고구려·백제·신라의 성장 부분 읽기",
-    "video": "EBS 「역사가 술술」에서 삼국 관련 편 1개 골라보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EA%B3%A0%EA%B5%AC%EB%A0%A4%20%EB%B0%B1%EC%A0%9C%20%EC%8B%A0%EB%9D%BC",
     "q": [
       "세 나라가 한강 주변을 중요하게 생각한 이유는?",
       "서로 경쟁하면서도 동맹을 맺는 이유는?"
@@ -549,7 +557,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1」에서 삼국 전성기와 한강 유역 부분 읽기",
-    "video": "EBS 「역사가 술술」에서 광개토대왕·근초고왕·진흥왕 중 하나 보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EC%82%BC%EA%B5%AD%20%EC%84%B1%EC%9E%A5%20%EA%B4%91%EA%B0%9C%ED%86%A0%EB%8C%80%EC%99%95%20%EA%B7%BC%EC%B4%88%EA%B3%A0%EC%99%95%20%EC%A7%84%ED%9D%A5%EC%99%95",
     "q": [
       "한강을 차지하면 어떤 점이 좋았을까?",
       "나라끼리 교류하면 무엇을 새로 배울 수 있을까?"
@@ -615,7 +624,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1」에서 삼국 통일 과정 부분 읽기",
-    "video": "EBS 초등 한국사 강좌에서 삼국 통일 관련 영상 보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EC%82%BC%EA%B5%AD%20%ED%86%B5%EC%9D%BC%20%EA%B9%80%EC%9C%A0%EC%8B%A0",
     "q": [
       "신라는 왜 당과 손을 잡았을까?",
       "처음에 친구였던 나라와 다시 싸울 수도 있는 이유는?"
@@ -681,7 +691,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1」에서 통일신라와 발해 부분 읽기",
-    "video": "EBS 초등 한국사 강좌에서 통일신라·발해 관련 영상 보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%ED%86%B5%EC%9D%BC%EC%8B%A0%EB%9D%BC%20%EB%B0%9C%ED%95%B4",
     "q": [
       "왜 ‘남북국 시대’라는 표현을 쓰기도 할까?",
       "발해가 고구려를 계승했다고 보는 이유는?"
@@ -747,7 +758,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1」에서 후삼국과 고려 건국 부분 읽기",
-    "video": "EBS 초등 한국사 강좌에서 왕건·고려 건국 영상 보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EA%B3%A0%EB%A0%A4%20%EA%B1%B4%EA%B5%AD%20%EC%99%95%EA%B1%B4",
     "q": [
       "왕건은 왜 다른 세력의 사람들도 자기편으로 만들려고 했을까?",
       "전쟁에서 이긴 뒤 나라를 안정시키려면 무엇이 필요할까?"
@@ -813,7 +825,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1」에서 고려의 생활과 문화 부분 읽기",
-    "video": "EBS 초등 한국사 강좌에서 고려 사회·문화 영상 보기",
+    "video": "KBS Kids 「별별 역사기차」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EB%B3%84%EB%B3%84%20%EC%97%AD%EC%82%AC%EA%B8%B0%EC%B0%A8%20%EA%B3%A0%EB%A0%A4%20%EC%83%9D%ED%99%9C",
     "q": [
       "왕과 귀족의 생활과 농민의 생활은 어떻게 달랐을까?",
       "종교가 건축과 예술에 영향을 줄 수 있는 이유는?"
@@ -879,7 +892,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1」에서 고려와 몽골의 전쟁 부분 읽기",
-    "video": "EBS 초등 한국사 강좌에서 몽골의 침입 관련 영상 보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EA%B3%A0%EB%A0%A4%20%EA%B1%B0%EB%9E%80%20%EB%AA%BD%EA%B3%A8",
     "q": [
       "수도를 섬인 강화도로 옮기면 어떤 장점이 있었을까?",
       "전쟁은 평범한 백성에게 어떤 영향을 줄까?"
@@ -945,7 +959,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1」에서 고려 말과 조선 건국 부분 읽기",
-    "video": "EBS 초등 한국사 강좌에서 이성계·조선 건국 영상 보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EC%A1%B0%EC%84%A0%20%EA%B1%B4%EA%B5%AD%20%EC%9D%B4%EC%84%B1%EA%B3%84",
     "q": [
       "사람들은 왜 기존 제도를 고치려고 했을까?",
       "나라가 바뀌어도 계속 이어지는 것은 무엇이 있을까?"
@@ -1011,7 +1026,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1」에서 세종과 훈민정음 부분 읽기",
-    "video": "EBS 초등 한국사 강좌에서 세종·훈민정음 영상 보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EC%84%B8%EC%A2%85%20%ED%9B%88%EB%AF%BC%EC%A0%95%EC%9D%8C",
     "q": [
       "세종은 왜 새로운 문자가 필요하다고 생각했을까?",
       "글을 쉽게 읽고 쓸 수 있게 되면 어떤 변화가 생길까?"
@@ -1077,7 +1093,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1」에서 조선의 신분과 생활 부분 읽기",
-    "video": "EBS 초등 한국사 강좌에서 조선 사회·생활 영상 보기",
+    "video": "KBS Kids 「별별 역사기차」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EB%B3%84%EB%B3%84%20%EC%97%AD%EC%82%AC%EA%B8%B0%EC%B0%A8%20%EC%A1%B0%EC%84%A0%20%EC%83%9D%ED%99%9C",
     "q": [
       "태어날 때 정해진 신분 때문에 할 수 있는 일이 달라지면 공평할까?",
       "조선 시대 농민의 하루는 어땠을까?"
@@ -1143,7 +1160,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1」에서 임진왜란과 이순신 부분 읽기",
-    "video": "EBS 「역사가 술술」에서 이순신·임진왜란 관련 편 보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EC%9E%84%EC%A7%84%EC%99%9C%EB%9E%80%20%EC%9D%B4%EC%88%9C%EC%8B%A0",
     "q": [
       "바다의 보급로를 막는 것이 왜 중요할까?",
       "평범한 사람들이 의병으로 나선 이유는 무엇일까?"
@@ -1209,7 +1227,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 2」에서 조선 후기 경제와 사회 변화 부분 읽기",
-    "video": "EBS 초등 한국사 강좌에서 조선 후기 변화 관련 영상 보기",
+    "video": "KBS Kids 「별별 역사기차」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EB%B3%84%EB%B3%84%20%EC%97%AD%EC%82%AC%EA%B8%B0%EC%B0%A8%20%EC%A1%B0%EC%84%A0%20%ED%9B%84%EA%B8%B0%20%EB%B3%80%ED%99%94",
     "q": [
       "시장이 커지면 사람들의 생활은 어떻게 달라질까?",
       "돈을 많이 번 상인이 늘어나면 신분제에는 어떤 변화가 생길까?"
@@ -1275,7 +1294,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 2」에서 개항과 근대 문물 부분 읽기",
-    "video": "EBS 초등 한국사 강좌에서 개항·강화도 조약 영상 보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EA%B0%9C%ED%95%AD%20%EA%B0%95%ED%99%94%EB%8F%84%EC%A1%B0%EC%95%BD",
     "q": [
       "외국 문물을 받아들이면 좋은 점과 어려운 점은?",
       "나라 사이의 조약이 공평해야 하는 이유는?"
@@ -1341,7 +1361,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 2」에서 일제강점기 부분 읽기",
-    "video": "EBS 초등 한국사 강좌에서 일제강점기 관련 영상 보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EC%9D%BC%EC%A0%9C%EA%B0%95%EC%A0%90%EA%B8%B0",
     "q": [
       "나라의 주권을 빼앗기면 평범한 사람들의 삶은 어떻게 달라질까?",
       "말과 문화를 지키는 것도 왜 중요할까?"
@@ -1407,7 +1428,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 2」에서 3·1운동과 독립운동 부분 읽기",
-    "video": "EBS 초등 한국사 강좌에서 3·1운동·임시정부 영상 보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EB%8F%85%EB%A6%BD%EC%9A%B4%EB%8F%99%203.1%EC%9A%B4%EB%8F%99",
     "q": [
       "독립운동 방법이 여러 가지였던 이유는?",
       "많은 사람이 함께 만세를 외친 행동에는 어떤 힘이 있었을까?"
@@ -1473,7 +1495,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 2」에서 광복·분단·대한민국 정부 수립 부분 읽기",
-    "video": "EBS 초등 한국사 강좌에서 광복·대한민국 정부 수립 영상 보기",
+    "video": "KBS Kids 「역사가 술술」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EC%97%AD%EC%82%AC%EA%B0%80%20%EC%88%A0%EC%88%A0%20%EA%B4%91%EB%B3%B5%20%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD",
     "q": [
       "광복을 했는데 왜 곧바로 하나의 평화로운 나라가 되지 못했을까?",
       "전쟁은 가족과 사람들의 삶에 어떤 상처를 남길까?"
@@ -1539,7 +1562,8 @@ window.HISTORY_WEEKS = [
       ]
     ],
     "book": "「용선생 처음 한국사 1·2」의 차례만 보며 전체 시대 순서 말하기",
-    "video": "가장 재미있었던 시대의 EBS 영상을 하나 골라 다시 보기",
+    "video": "KBS Kids 「별별 역사기차」에서 이번 주 주제와 연결되는 영상 보기",
+    "videoUrl": "https://www.youtube.com/@kbskids/search?query=%EB%B3%84%EB%B3%84%20%EC%97%AD%EC%82%AC%EA%B8%B0%EC%B0%A8%20%ED%95%9C%EA%B5%AD%EC%82%AC",
     "q": [
       "한국사의 큰 순서를 내 말로 1분 안에 말해볼까?",
       "가장 더 알고 싶은 시대는 언제이고 왜 그럴까?"
