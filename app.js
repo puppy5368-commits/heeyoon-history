@@ -355,11 +355,20 @@
                     value="video"
                     ${day2Choice === "video" ? "checked" : ""}>
                   <div>
-                    <div class="resource-name">🎬 EBS 역사 영상</div>
+                    <div class="resource-name">🎬 KBS Kids 역사 영상</div>
                     <div class="resource-desc">${escapeHtml(week.video)}</div>
                   </div>
                 </div>
               </label>
+
+              <a
+                class="video-watch-link"
+                target="_blank"
+                rel="noopener"
+                href="${escapeHtml(week.videoUrl || "https://www.youtube.com/@kbskids")}">
+                ▶ KBS Kids에서 영상 찾기 ↗
+              </a>
+              <div class="video-help">영상을 본 뒤 위의 ‘EBS 역사 영상’ 선택을 체크하면 DAY 2가 완료돼요.</div>
             </div>
           </section>
 
